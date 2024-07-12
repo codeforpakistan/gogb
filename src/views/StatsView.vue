@@ -1,12 +1,22 @@
 <template>
   <v-card flat tile>
     <v-card-title>Statistics</v-card-title>
+    <v-card-text>
     <GChart
       type="PieChart"
-      :data="chartData"
-      :options="chartOptions"
+      :data="status.data"
+      :options="status.options"
     />
-    <v-card-text>
+    <GChart
+      type="LineChart"
+      :data="timeline.data"
+      :options="timeline.options"
+    />
+    <GChart
+      type="PieChart"
+      :data="type.data"
+      :options="type.options"
+    />
 
     </v-card-text>
   </v-card>
@@ -17,16 +27,45 @@
   export default {
     components: { GChart },
     data: () => ({
-      
-      chartData: [
-        ['Status', 'Activities'],
-        ['Pending', 100],
-        ['Resolved', 50]
-      ],
-      chartOptions: {
-        chartArea:{left:0, width:'100%', height:'75%'},
-        legend: {position: 'top', alignment: 'center'},
-        height: 300,
+      status: {
+        data: [
+          ['Status', 'Activities'],
+          ['Pending', 100],
+          ['Resolved', 50]
+        ],
+        options: {
+          chartArea:{left:0, width:'100%', height:'75%'},
+          legend: {position: 'top', alignment: 'center'},
+          height: 300,
+        },
+      },
+      timeline: {
+        data: [
+          ['Year', 'Strike', 'Protest', 'Violence'],
+          ['2020', 100, 234, 120],
+          ['2021', 75, 43, 90],
+          ['2022', 50, 220, 94],
+          ['2023', 50, 74, 23],
+          ['2024', 50, 110, 32]
+        ],
+        options: {
+          chartArea:{left:0, width:'100%', height:'75%'},
+          legend: {position: 'top', alignment: 'center'},
+          height: 300,
+        },
+      },
+      type: {
+        data: [
+          ['Type', 'Activities'],
+          ['Strike', 100],
+          ['Protest', 75],
+          ['Violence', 50]
+        ],
+        options: {
+          chartArea:{left:0, width:'100%', height:'75%'},
+          legend: {position: 'top', alignment: 'center'},
+          height: 300,
+        },
       },
       headers: [
         { text: 'Location', value: 'district' },
