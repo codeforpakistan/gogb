@@ -1,31 +1,34 @@
 <template>
-  <v-card flat tile>
-    <v-card-title>Statistics</v-card-title>
-    <v-card-text>
-    <GChart
-      type="PieChart"
-      :data="status.data"
-      :options="status.options"
-    />
-    <GChart
-      type="LineChart"
-      :data="timeline.data"
-      :options="timeline.options"
-    />
-    <GChart
-      type="PieChart"
-      :data="type.data"
-      :options="type.options"
-    />
+  <v-main>
+    <app-bar title="Statistics"></app-bar>
+    <v-card flat tile>
+      <v-card-text>
+      <GChart
+        type="PieChart"
+        :data="status.data"
+        :options="status.options"
+      />
+      <GChart
+        type="LineChart"
+        :data="timeline.data"
+        :options="timeline.options"
+      />
+      <GChart
+        type="PieChart"
+        :data="type.data"
+        :options="type.options"
+      />
 
-    </v-card-text>
-  </v-card>
+      </v-card-text>
+    </v-card>
+  </v-main>
 </template>
 
 <script>
+  import AppBar from '@/components/AppBar'
   import { GChart } from 'vue-google-charts/legacy'
   export default {
-    components: { GChart },
+    components: { AppBar, GChart },
     data: () => ({
       status: {
         data: [

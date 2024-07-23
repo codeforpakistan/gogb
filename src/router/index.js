@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LawView from '../views/LawView.vue'
+import PriceView from '../views/PriceView.vue'
 import LoginView from '../views/LoginView.vue'
 import UserView from '../views/UserView.vue'
 import DetailView from '../views/DetailView.vue'
@@ -12,6 +14,8 @@ Vue.use(VueRouter)
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
+  { path: '/incidents', name: 'incidents', component: LawView },
+  { path: '/inspections', name: 'inspections', component: PriceView },
   { path: '/login', name: 'login', component: LoginView },
   { path: '/user', name: 'user', component: UserView },
   { path: '/detail', name: 'detail', component: DetailView },
@@ -23,7 +27,16 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } 
+    if (to.hash) {
+      return { selector: to.hash, behavior: 'smooth', offset: { x: 0, y: 0 } }
+    }
+    return { x: 0, y: 0 }
+  }
 })
 
 export default router

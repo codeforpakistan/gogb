@@ -1,24 +1,29 @@
 <template>
-  <v-card color="transparent" tile flat>
-    <v-card-title>{{ activity.subject }}</v-card-title>
-    <v-card-subtitle class="d-flex mt-1">
-      <v-icon :color="itemColor(activity.status)">{{ itemIcon(activity.status) }}</v-icon>
-      <span class="ms-2 flex-grow-1">{{ activity.type }}</span>
-    </v-card-subtitle>
-    <v-card-text>
-      <p class="mb-0">Started: {{ activity.start.toRelative() }}</p>
-      <p>Ended: {{ activity.end.toRelative() }}</p>
-      <p>{{ activity.description }}</p>
-    </v-card-text>
-    <v-card-actions class="pa-4">
-      <v-btn color="primary" class="flex-grow-1" depressed :to="{ name: 'edit' }">Edit</v-btn>
-      <v-btn color="secondary" class="flex-grow-1" depressed :to="{ name: 'home' }">Resolve</v-btn>
-    </v-card-actions>
-  </v-card>
+  <v-main>
+    <app-bar title="Law & Order"></app-bar>
+    <v-card color="transparent" tile flat>
+      <v-card-title>{{ activity.subject }}</v-card-title>
+      <v-card-subtitle class="d-flex mt-1">
+        <v-icon :color="itemColor(activity.status)">{{ itemIcon(activity.status) }}</v-icon>
+        <span class="ms-2 flex-grow-1">{{ activity.type }}</span>
+      </v-card-subtitle>
+      <v-card-text>
+        <p class="mb-0">Started: {{ activity.start.toRelative() }}</p>
+        <p>Ended: {{ activity.end.toRelative() }}</p>
+        <p>{{ activity.description }}</p>
+      </v-card-text>
+      <v-card-actions class="pa-4">
+        <v-btn color="primary" class="flex-grow-1" depressed :to="{ name: 'edit' }">Edit</v-btn>
+        <v-btn color="secondary" class="flex-grow-1" depressed :to="{ name: 'home' }">Resolve</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-main>
 </template>
 <script>
+  import AppBar from '@/components/AppBar'
   const { DateTime } = require("luxon");
   export default {
+    components: { AppBar },
     data: () => ({
       activity: {
         subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
