@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2024-07-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 2,
+    "type": "Barbershop",
+    "location": "Phander, Gupis-Yasin",
+    "date": "2020-12-20",
+    "status": "Violation"
+  },
+  {
+    "id": 3,
+    "type": "Butcher",
+    "location": "Eidgah, Astore",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 4,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 5,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 6,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 7,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 8,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  },
+  {
+    "id": 9,
+    "type": "Grocers",
+    "location": "Chilas, Diamer",
+    "date": "2020-12-20",
+    "status": "Compliant"
+  }
+]

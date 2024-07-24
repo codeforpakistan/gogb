@@ -4,10 +4,10 @@
     <v-container>
       <v-row dense>
         <v-col>
-          <v-btn block depressed :to="{name: 'incidents'}"><v-icon left>mdi-gavel</v-icon> Law and Order</v-btn>
+          <v-btn block depressed :to="{name: 'law_list'}"><v-icon left>mdi-gavel</v-icon> Law and Order</v-btn>
         </v-col>
         <v-col>
-          <v-btn block depressed :to="{name: 'inspections'}"><v-icon left>mdi-chart-bar</v-icon> Price Control</v-btn>
+          <v-btn block depressed :to="{name: 'price_list'}"><v-icon left>mdi-chart-bar</v-icon> Price Control</v-btn>
         </v-col>
       </v-row>
     </v-container>

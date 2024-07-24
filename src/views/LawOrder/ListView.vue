@@ -1,8 +1,8 @@
 <template>
   <v-main>
-    <app-bar title="Law & Order"></app-bar>
-    <v-list lines="two">
-      <v-list-item v-for="(activity,i) in activities" :key="i" to="detail">
+    <app-bar title="Law &amp; Order"></app-bar>
+    <v-list two-line>
+      <v-list-item v-for="(activity,i) in activities" :key="i" :to="{ name: 'law_detail' }">
         <v-list-item-avatar color="primary">
           <span class="white--text">{{ typeIcon(activity.type) }}</span>
         </v-list-item-avatar>
@@ -15,6 +15,13 @@
         </v-list-item-action>
       </v-list-item>
     </v-list>
+    <template v-if="this.$route.name == 'incidents'">
+      <v-fab-transition>
+        <v-btn color="pink" dark fab absolute fixed bottom right :to="{ name: 'law_create' }" style="z-index:999;bottom:5em;">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-fab-transition>
+    </template>
   </v-main>
 </template>
 <script>

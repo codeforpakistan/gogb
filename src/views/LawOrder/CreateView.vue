@@ -16,7 +16,7 @@
       </v-row>
     </v-card-text>
     <v-card-actions class="pa-4">
-      <v-btn color="primary" depressed block :to="{ name: 'detail' }">Submit</v-btn>
+      <v-btn color="primary" depressed block :to="{ name: 'law_detail' }">Submit</v-btn>
     </v-card-actions>
   </v-card>
 </template>
