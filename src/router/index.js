@@ -11,6 +11,8 @@ import LawEdit from '../views/LawOrder/EditView.vue'
 import LawCreate from '../views/LawOrder/CreateView.vue'
 import PriceList from '../views/Price/ListView.vue'
 import PriceDetail from '../views/Price/DetailView.vue'
+import PriceEdit from '../views/Price/EditView.vue'
+import PriceCreate from '../views/Price/CreateView.vue'
 
 Vue.use(VueRouter)
 
@@ -21,15 +23,15 @@ const routes = [
   { path: '/stats', name: 'stats', component: StatsView },
   { path: '/law', component: BaseView, children: [
     { path: '', name: 'law_list', component: LawList },
-    { path: 'detail', name: 'law_detail', component: LawDetail },
-    { path: 'edit', name: 'law_edit', component: LawEdit },
+    { path: ':id', name: 'law_detail', component: LawDetail },
+    { path: ':id/edit', name: 'law_edit', component: LawEdit },
     { path: 'create', name: 'law_create', component: LawCreate },
   ]},
   { path: '/price', component: BaseView, children: [
     { path: '', name: 'price_list', component: PriceList },
     { path: ':id', name: 'price_detail', component: PriceDetail },
-    // { path: '/edit', name: 'price_edit', component: PriceEdit },
-    // { path: '/create', name: 'price_create', component: PriceCreate },
+    { path: ':id/edit', name: 'price_edit', component: PriceEdit },
+    { path: 'create', name: 'price_create', component: PriceCreate },
   ]},
 ]
 

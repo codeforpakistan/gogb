@@ -1,14 +1,11 @@
 <template>
   <v-main>
-    <app-bar title="Price Control">
-      <template slot="actions">
-        sdcsd
-      </template>
-    </app-bar>
-    <v-list two-line>
+    <app-bar title="Price Control"></app-bar>
+    <v-list two-line subheader>
+      <v-subheader>List of Inspections</v-subheader>
       <v-list-item v-for="(item,i) in items" :key="i" :to="{ name: 'price_detail', params: { id: item.id } }">
         <v-list-item-avatar color="primary">
-          <span class="white--text">{{ typeIcon(item.type) }}</span>
+          <v-img :src="item.user"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>{{ item.type }}</v-list-item-title>
@@ -20,6 +17,11 @@
         </v-list-item-action>
       </v-list-item>
     </v-list>
+    <v-fab-transition>
+      <v-btn color="pink" dark fab absolute fixed bottom right :to="{ name: 'price_create' }" style="z-index:999;bottom:5em;">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </v-main>
 </template>
 <script>
