@@ -15,7 +15,14 @@
           <v-date-picker v-model="item.date" @input="menu = false"></v-date-picker>
         </v-menu>
 
-        <v-textarea v-model="description" label="Description"></v-textarea>
+        <v-text-field label="Fine" v-model="item.fine" suffix="PKR" />
+        <div class="d-flex">
+          <v-checkbox class="me-2" v-model="item.warned" label="Warning"></v-checkbox>
+          <v-checkbox class="me-2" v-model="item.sealed" label="Sealed"></v-checkbox>
+          <v-checkbox class="me-2" v-model="item.fir" label="FIR"></v-checkbox>
+          <v-checkbox v-model="item.arrest" label="Arrest"></v-checkbox>
+        </div>
+        
       </v-card-text>
       <v-card-actions class="pa-4">
         <v-btn color="secondary" depressed block :to="{ name: 'price_detail', params: { id: item.id } }">Update</v-btn>

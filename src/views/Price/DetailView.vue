@@ -11,7 +11,11 @@
       <v-card-text>
         <p><v-icon :color="itemColor(item.status)">{{ itemIcon(item.status) }}</v-icon> {{ item.status }}</p>
         <p><v-icon>mdi-calendar</v-icon> {{ toRelativeTime(item.date) }}</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non nisi sed ante vehicula varius non vel odio. Phasellus varius, arcu sed eleifend sodales, nibh metus rutrum enim, et venenatis eros ex quis purus. Proin finibus efficitur tortor, sed tincidunt ante varius sed. Etiam sodales magna a dignissim sagittis.</p>
+        <p><v-icon>mdi-currency-usd</v-icon> {{ item.fine }}</p>
+        <p class="text--primary font-weight-bold"><v-icon>mdi-alert-circle-outline</v-icon> {{ item.warned ? 'Warned' : 'Not Warned' }} </p>
+        <p><v-icon>mdi-lock-outline</v-icon> {{ item.sealed ? 'Sealed' : 'Not Sealed' }} </p>
+        <p><v-icon>mdi-file-document-outline</v-icon> {{ item.fir ? 'FIR' : 'No FIR' }} </p>
+        <p><v-icon>mdi-handcuffs</v-icon> {{ item.fir ? 'Arrest' : 'No Arrest' }} </p>
       </v-card-text>
     </v-card>
   </v-main>

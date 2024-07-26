@@ -11,14 +11,14 @@
         </v-row>
 
         <v-row>
-          <v-col><v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+          <v-col><v-menu v-model="menu1" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field v-model="item.start" label="Start date" readonly v-bind="attrs" v-on="on"></v-text-field>
             </template>
             <v-date-picker v-model="item.start" @input="menu1 = false"></v-date-picker>
           </v-menu></v-col>
         
-          <v-col><v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+          <v-col><v-menu v-model="menu2" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field v-model="item.end" label="End date" readonly v-bind="attrs" v-on="on"></v-text-field>
             </template>
@@ -36,10 +36,10 @@
 </template>
 <script>
 import AppBar from '@/components/AppBar'
-const { DateTime } = require("luxon");
 export default {
   components: { AppBar },
   data: () => ({
+    menu1: false,
     menu2: false,
     item: {
       subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
