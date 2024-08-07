@@ -41,6 +41,7 @@ const LawTypesDropdown = ({ value, onValueChange }) => {
         paddingHorizontal: 10,
       }}
       dropDownContainerStyle={{ borderColor: '#ccc' }}
+      zIndex={2}
     />
   );
 };

@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, FlatList, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
 import { getInitials, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay } from '../../../utils/formatDate';
+import { fetchActivitiesFromPocketBase } from '../../../utils/law&OrderUtils';
+import { setActivities } from '../../../redux/lawSlice';
 
 const Item = ({ title, status, tag, date, onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
     <View style={styles.iconContainer}>
-      <Text style={styles.iconText}>{getInitials(tag)}</Text>
+      <Text style={styles.iconText}>{getInitials(tag) || ""}</Text>
     </View>
     <View style={styles.textContainer}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.tag}>{getTypeTitle(tag)}</Text>
+      <Text style={styles.tag}>{getTypeTitle(tag)|| ""}</Text>
       <Text style={styles.tag}>
-        {dateDisplay(date)}
+        {dateDisplay(date) || ""}
       </Text>
     </View>
     <View>
@@ -25,18 +27,31 @@ const Item = ({ title, status, tag, date, onPress }) => (
 
 const Activities = () => {
   const activities = useSelector(state => state?.law?.allActivities);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   const fetchActivities = async () => {
+  //     try {
+  //       const activities = await fetchActivitiesFromPocketBase();
+  //       dispatch(setActivities(activities));
+  //     } catch (error) {
+  //       console.error("Failed to fetch activities", error);
+  //     }            
+  //   };
+  //   fetchActivities();
+  // }, [dispatch]);
+  
   const router = useRouter();
 
   const handleActivityPress = (activity) => {
     router.push({
       pathname: '/forms/lawOrder/readPage',
-      params: { title: activity?.title, start:activity?.start},
+      params: { start:activity?.start},
     });
   };
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
-      <FlatList
+      {activities ? <FlatList
         data={[...activities]}
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
@@ -49,7 +64,7 @@ const Activities = () => {
           />
         )}
         contentContainerStyle={styles.listContent}
-      />
+      /> : ""}
     </SafeAreaView>
   );
 };

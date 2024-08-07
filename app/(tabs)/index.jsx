@@ -12,7 +12,7 @@ const data = [
 
 const Index = () => {
   const renderItem = ({ item }) => (
-    <Link href={`${item.link}?title=${encodeURIComponent(item.name)}`} style={styles.itemContainer} params={{ title: 'Custom Header Title' }}>
+    <Link href={`${item.link}`} style={styles.itemContainer}>
       <View style={styles.innerContainer}>
         <Image source={item.icon} style={styles.icon} />
         <ThemedText type="subtitle" style={styles.iconName}>{item.name}</ThemedText>   

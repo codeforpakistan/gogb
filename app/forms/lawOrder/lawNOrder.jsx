@@ -6,7 +6,7 @@ import Activities from './activities';
 import FloatingButton from '../../../components/floatingButton';
 
 const LawNOrder = () => {
-  useHeaderTitle();
+  useHeaderTitle('Activities');
   const router = useRouter(); 
 
   const handlePress = () => {

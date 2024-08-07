@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getLoctaionTitle, getTypeTitle } from '../../../utils/Ui';
@@ -9,18 +9,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleActivitySubmission } from '../../../utils/law&OrderUtils';
 
 const ReadPage = () => {
-  useHeaderTitle();
+  // Ensure hooks are always called at the top level
+  useHeaderTitle('Activity Details');
   const router = useRouter();
   const { start } = useLocalSearchParams();
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.law.allActivities);
   const offlineActivities = useSelector((state) => state.law.offlineActivities);
-  const activity = activities?.find((act) => act?.start === start) || {};
+  const activityItem = activities?.find((act) => act?.start === start) || {};
+  const [activity, setActivity] = useState((state) => activities.find((act)=> act?.start === start));
 
+  // Function handlers should be defined outside of the render logic
   const handleEdit = () => {
     router.push({
       pathname: '/forms/lawOrder/lawForm',
-      params: { title: 'Law Form', id: activity.id, start: activity.start },
+      params: {id: activity.id, start: activity.start },
     });
   };
 
@@ -50,17 +53,18 @@ const ReadPage = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Activity Details</Text>
       </View>
-      <View style={styles.detailContainer}>
+      {activity ? <>
+        <View style={styles.detailContainer}>
         <Text style={styles.detailText}>Title: {activity.title}</Text>
-        <Text style={styles.detailText}>Type: {getTypeTitle(activity.type)}</Text>
-        <Text style={styles.detailText}>Location: {getLoctaionTitle(activity.location)}</Text>
+        <Text style={styles.detailText}>Type: {getTypeTitle(activity.type) || ""}</Text>
+        <Text style={styles.detailText}>Location: {getLoctaionTitle(activity.location) || ""}</Text>
         <Text style={styles.detailText}>Description: {activity.description}</Text>
         <Text style={styles.detailText}>
           Status: {activity.status === 'oc1pvgu8gv29bp0' ? 'Resolved' : 'Open'}
         </Text>
         {activity.status === 'oc1pvgu8gv29bp0' && (
           <Text style={styles.detailText}>
-            Resolved: {dateDisplay(activity.end)}
+            Resolved: {dateDisplay(activity.end) || ""} 
           </Text>
         )}
       </View>
@@ -76,6 +80,7 @@ const ReadPage = () => {
           </TouchableOpacity>
         )}
       </View>
+      </> : ""}
     </ScrollView>
   );
 };
@@ -89,9 +94,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-  },
-  backButton: {
-    marginRight: 10,
   },
   title: {
     fontSize: 20,

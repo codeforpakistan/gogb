@@ -5,31 +5,30 @@ import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities
 
 export const submitActivityToPocketBase = async (activity) => {
   try {
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    // Append other activity data
-    for (const key in activity) {
-      if (key !== 'attachments') {
-        formData.append(key, activity[key]);
-      }
-    }
+    // // Append other activity data
+    // for (const key in activity) {
+    //   if (key !== 'attachments') {
+    //     formData.append(key, activity[key]);
+    //   }
+    // }
 
-    // Append attachments if they exist
-    if (activity.attachments) {
-      activity.attachments.forEach((attachment, index) => {
-        formData.append('attachments', {
-          name: attachment.fileName,
-          type: attachment.type,
-          uri: activity,
-        })
-      });
-    }
+    // // Append attachments if they exist
+    // if (activity.attachments) {
+    //   activity.attachments.forEach((attachment, index) => {
+    //     formData.append('attachments', {
+    //       name: attachment.fileName,
+    //       type: attachment.type,
+    //       uri: activity,
+    //     })
+    //   });
+    // }
 
-    if (activity.id) {
-      await pb.collection('gogb_law_incidents').update(activity.id, formData);
-      activity.id = response.id;
+    if (activity.id !== null) {
+      await pb.collection('gogb_law_incidents').update(activity.id, activity);
     } else {
-      const response = await pb.collection('gogb_law_incidents').create(formData);
+      const response = await pb.collection('gogb_law_incidents').create(activity);
       activity.id = response.id;
     }
   } catch (error) {

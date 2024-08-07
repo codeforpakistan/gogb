@@ -11,42 +11,42 @@ export default function TabLayout() {
 
   return (
     <ProtectedRoute>
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          headerShown: true,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="stats"
-        options={{
-          title: 'Stats',
-          headerShown: true,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="user"
-        options={{
-          title: 'User',
-          headerShown: true,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          headerShown: false,
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="stats"
+          options={{
+            title: 'Stats',
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="user"
+          options={{
+            title: 'User',
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
     </ProtectedRoute>
   );
 }

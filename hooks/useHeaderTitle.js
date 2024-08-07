@@ -1,11 +1,8 @@
 import { useLayoutEffect } from 'react';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const useHeaderTitle = (defaultTitle = 'Default Title') => {
-  const route = useRoute();
+const useHeaderTitle = (title) => {
   const navigation = useNavigation();
-  const title = route.params?.title || defaultTitle;
-
   useLayoutEffect(() => {
     navigation.setOptions({ 
       title, 

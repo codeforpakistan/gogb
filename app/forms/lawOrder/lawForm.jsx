@@ -15,16 +15,16 @@ import { handleActivitySubmission } from '@/utils/law&OrderUtils';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import AttachmentPreview from '../../../components/attachmentPreview';
 
-const imgDir = FileSystem.documentDirectory + 'images/';
-const ensureDirExits = async()=> {
-  const dirInfo = await FileSystem.getInfoAsync(imgDir);
-  if(!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
-  }
-};
+// const imgDir = FileSystem.documentDirectory + 'images/';
+// const ensureDirExits = async()=> {
+//   const dirInfo = await FileSystem.getInfoAsync(imgDir);
+//   if(!dirInfo.exists) {
+//     await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
+//   }
+// };
 
 const LawForm = () => {
-  useHeaderTitle();
+  useHeaderTitle('Law & Order');
   const dispatch = useDispatch();
   const { id, start } = useLocalSearchParams();
   const activities = useSelector((state) => state.law.allActivities);
@@ -51,10 +51,8 @@ const LawForm = () => {
       attachments,
       status: activity.status || '03wo39321evp5os',
     };
-    const success = await handleActivitySubmission(dispatch, newActivity, offlineActivities);
-    if (success) {
+     await handleActivitySubmission(dispatch, newActivity, offlineActivities);
       router.back();
-    }
   };
 
   const openModal = (type) => {
@@ -62,13 +60,13 @@ const LawForm = () => {
     setModalVisible(true);
   };
 
-  const saveImage = async (uri) => {
-    await ensureDirExits();
-    const fileName = dbDate() + '.jpg';
-    const dest = imgDir + fileName;
-    await FileSystem.copyAsync({from:uri, to:dest})
-    setAttachments([...attachments, dest])
-  }
+  // const saveImage = async (uri) => {
+  //   await ensureDirExits();
+  //   const fileName = dbDate() + '.jpg';
+  //   const dest = imgDir + fileName;
+  //   await FileSystem.copyAsync({from:uri, to:dest})
+  //   setAttachments([...attachments, dest])
+  // }
   
   // Existing image picker function
   const handlePhotoPick = async () => {
@@ -78,7 +76,8 @@ const LawForm = () => {
       allowsEditing:false,
     });
     if (!result.canceled) {
-      setAttachments([...attachments, { type: 'image', uri: result.assets[0].uri, name:result.assets[0].name }]);
+      console.log(result);
+      setAttachments([...attachments, { type:'image' , uri: result.assets[0].uri, name:result.assets[0].fileName }]);
     }
   };
   
@@ -195,7 +194,8 @@ const LawForm = () => {
         /> */}
       </View>
 
-      <FlatList
+      {attachments ? <>
+        <FlatList
         data={attachments}
         renderItem={({ item, index }) => (
           <AttachmentPreview
@@ -207,6 +207,7 @@ const LawForm = () => {
       />
 
       <Button title="Submit" onPress={()=>handleSubmit(id)} />
+        </>: ""}
     </View>
   );
 };

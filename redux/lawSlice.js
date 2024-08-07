@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   activities: [],
   offlineActivities: [],
-  allActivities:[],
+  allActivities: [],
 };
 
 const lawSlice = createSlice({
@@ -21,7 +21,7 @@ const lawSlice = createSlice({
     },
     setOfflineActivity: (state, action) => {
       const newActivity = action.payload;
-      const existingActivity = state.offlineActivities.find(activity => activity.start === newActivity.start); 
+      const existingActivity = state.offlineActivities.find(activity => activity.id === newActivity.id); 
       if (existingActivity) {
         // Update the existing activity
         Object.assign(existingActivity, newActivity);
@@ -32,7 +32,7 @@ const lawSlice = createSlice({
       // Update allActivities
       state.allActivities = [...state.activities, ...state.offlineActivities];
     },
-    clearOfflineActivities: (state, action) => {
+    clearOfflineActivities: (state) => {
       state.offlineActivities = [];
     },
     setActivities: (state, action) => {
