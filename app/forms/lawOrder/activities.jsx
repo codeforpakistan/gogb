@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
@@ -27,6 +27,12 @@ const Item = ({ title, status, tag, date, onPress }) => (
 
 const Activities = () => {
   const activities = useSelector(state => state?.law?.allActivities);
+  const [sortedActivities, setSortedActivities] = useState([]);
+
+  useEffect(() => {
+    const sorted = [...activities].sort((a, b) => new Date(b.start) - new Date(a.start));
+    setSortedActivities(sorted);
+  }, [activities]);
   // const dispatch = useDispatch();
   // useEffect(() => {
   //   const fetchActivities = async () => {
@@ -52,7 +58,7 @@ const Activities = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       {activities ? <FlatList
-        data={[...activities]}
+        data={[...sortedActivities]}
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Item

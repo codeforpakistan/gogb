@@ -1,5 +1,5 @@
 
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase('http://143.198.203.96');
+const pb = new PocketBase('https://pb.codeforpakistan.org');
 export default pb;
