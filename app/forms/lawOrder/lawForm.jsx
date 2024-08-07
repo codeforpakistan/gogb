@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList, Alert, PermissionsAndroid, } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import * as DocumentPicker from 'expo-document-picker';
+// import * as DocumentPicker from 'expo-document-picker';
 import { Audio } from 'expo-av';
 import { useLocalSearchParams, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -14,6 +14,35 @@ import LawTypesDropdown from './lawTypes';
 import { handleActivitySubmission } from '@/utils/law&OrderUtils';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import AttachmentPreview from '../../../components/attachmentPreview';
+import DocumentPicker from 'react-native-document-picker';
+import {requestFilePermissions} from '../../../utils/permissions';
+
+async function pickDocument() {
+  try {
+    const res = await DocumentPicker.pick({
+      type: [DocumentPicker.types.pdf, DocumentPicker.types.docx],
+    });
+    console.log(
+      res.uri,
+      res.type, // mime type
+      res.name,
+      res.size
+    );
+    // Now you can access the file using the URI
+  } catch (err) {
+    if (DocumentPicker.isCancel(err)) {
+      // User cancelled the picker
+    } else {
+      throw err;
+    }
+  }
+}
+
+const handleFilePick = async () => {
+  await requestFilePermissions();
+  await pickDocument();
+};
+
 
 // const imgDir = FileSystem.documentDirectory + 'images/';
 // const ensureDirExits = async()=> {
@@ -85,7 +114,6 @@ const LawForm = () => {
   const handleVideoPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsMultipleSelection: false, // Not supported by ImagePicker
     });
     if (!result.canceled) {
       setAttachments([...attachments, { type: 'video', uri: result.assets[0].uri, name:result.assets[0].name }]);
@@ -93,20 +121,12 @@ const LawForm = () => {
   };
   
   // New document picker function
-  const handleDocumentPick = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: '/',
-      multiple: false, // DocumentPicker supports multiple file selection
-    });
-    if (!result.canceled) {
-      setAttachments([...attachments, { type: 'document', uri: result.assets[0].uri, name:result.assets[0].name }]);
-    }
-  };  
+ 
 
   const handleAudioPick = async () => {
     const result = await DocumentPicker.getDocumentAsync({
       type: 'audio/*',
-      multiple: true,
+      multiple: false ,
     });
     if (!result.canceled) {
       setAttachments([...attachments, { type: 'audio', uri: result.assets[0].uri, name:result.assets[0].name }]);
@@ -179,7 +199,7 @@ const LawForm = () => {
         <TouchableOpacity onPress={handlePhotoPick}>
           <TabBarIcon name="camera-outline" color="#007AFF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleDocumentPick}>
+        <TouchableOpacity onPress={handleFilePick}>
           <TabBarIcon name="document-outline" color="#007AFF" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleVideoPick}>
