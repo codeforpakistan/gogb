@@ -6,6 +6,7 @@ import { getInitials, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay } from '../../../utils/formatDate';
 import { fetchActivitiesFromPocketBase } from '../../../utils/law&OrderUtils';
 import { setActivities } from '../../../redux/lawSlice';
+import {setCurrActivity}  from '../../../redux/lawSlice';
 
 const Item = ({ title, status, tag, date, onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
@@ -26,6 +27,7 @@ const Item = ({ title, status, tag, date, onPress }) => (
 );
 
 const Activities = () => {
+  const dispatch = useDispatch();
   const activities = useSelector(state => state?.law?.allActivities);
   const [sortedActivities, setSortedActivities] = useState([]);
 
@@ -53,6 +55,7 @@ const Activities = () => {
       pathname: '/forms/lawOrder/readPage',
       params: { start:activity?.start},
     });
+    dispatch(setCurrActivity(activity))
   };
 
   return (

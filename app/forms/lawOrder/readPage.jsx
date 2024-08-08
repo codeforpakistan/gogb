@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getLoctaionTitle, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay, dbDate } from '../../../utils/formatDate';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { handleActivitySubmission } from '../../../utils/law&OrderUtils';
 
 const ReadPage = () => {
@@ -16,11 +16,11 @@ const ReadPage = () => {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.law.allActivities);
   const offlineActivities = useSelector((state) => state.law.offlineActivities);
-  const activityItem = activities?.find((act) => act?.start === start) || {};
-  const [activity, setActivity] = useState((state) => activities.find((act)=> act?.start === start));
+  const activity = useSelector((state) => state.law.currActivity);
+  console.log(activity);
 
   // Function handlers should be defined outside of the render logic
-  const handleEdit = () => {
+  const handleEdit = (activity) => {
     router.push({
       pathname: '/forms/lawOrder/lawForm',
       params: {id: activity.id, start: activity.start },
@@ -69,7 +69,7 @@ const ReadPage = () => {
         )}
       </View>
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={handleEdit} style={styles.iconButton}>
+        <TouchableOpacity onPress={()=>handleEdit(activity)} style={styles.iconButton}>
           <Ionicons name="pencil" size={24} color="#007AFF" />
           <Text>Edit</Text>
         </TouchableOpacity>

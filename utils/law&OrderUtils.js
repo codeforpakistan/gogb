@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import pb from '../pocketbaseClient';
 import { Alert } from 'react-native';
-import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities } from '../redux/lawSlice';
+import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
 export const submitActivityToPocketBase = async (activity) => {
   try {
@@ -70,4 +70,5 @@ export const handleActivitySubmission = async (dispatch, newActivity, offlineAct
   } else {
     dispatch(setOfflineActivity(newActivity));
   }
+  dispatch(setCurrActivity(newActivity))
 };

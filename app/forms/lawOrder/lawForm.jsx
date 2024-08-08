@@ -94,12 +94,18 @@ const LawForm = () => {
   
   // New document picker function
   const handleDocumentPick = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: '/',
-      multiple: false, // DocumentPicker supports multiple file selection
-    });
-    if (!result.canceled) {
-      setAttachments([...attachments, { type: 'document', uri: result.assets[0].uri, name:result.assets[0].name }]);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'application/vnd.google-apps.document'],
+        multiple: false,
+      });
+  
+      if (!result.canceled) {
+        const file = result.assets[0];
+        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type }]);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };  
 
