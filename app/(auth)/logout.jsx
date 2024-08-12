@@ -2,27 +2,30 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/authSlice';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon you want to use
 import { useRouter } from 'expo-router';
+import pb from '../../pocketbaseClient';
+import useHeaderTitle from '../../hooks/useHeaderTitle';
 
 export default function LogoutScreen() {
+  useHeaderTitle('Govt. of Gilgit Baltistan');
   const dispatch = useDispatch();
   const router = useRouter();
   const user = useSelector((state) => state.auth.user);
-
+  console.log(user)
   const handleLogout = () => {
+    pb.authStore.clear();
     dispatch(logout());
-    router.replace('/login'); // Redirect to login screen after logout
+    router.replace('/login'); 
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.username}>{user ? `Hello, ${user.id}` : 'Hello, Guest'}</Text>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Icon name="logout" size={24} color="#fff" />
-        </TouchableOpacity>
+      <View style={styles.userDetails}>
+      <Text style={styles.username}>{user ? user.record.name : 'Guest'}</Text>
       </View>
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Log Out</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -30,31 +33,31 @@ export default function LogoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5F7FA',
     padding: 20,
+    justifyContent: 'flex-start',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
+  userDetails: {
+    marginBottom: 20, 
+    gap:20
   },
   username: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginRight: 10,
     color: '#333',
+    marginBottom: 50
   },
   logoutButton: {
-    backgroundColor: '#DC3545', // Red color for logout button
-    borderRadius: 8,
-    padding: 10,
+    backgroundColor: '#1DA1F2', 
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius:5
   },
-  message: {
+  logoutButtonText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#666',
+    fontWeight: 'bold',
   },
 });

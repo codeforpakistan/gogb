@@ -13,17 +13,22 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs access to your microphone for audio record."
+      }
     },
     "android": {
       "permissions": [
-        "INTERNET"
+        "INTERNET",
+        "RECORD_AUDIO",
+        "WRITE_EXTERNAL_STORAGE"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.farooqwd.GOGB",
+      "package": "com.farooqwd.GOGB"
     },
     "web": {
       "bundler": "metro",

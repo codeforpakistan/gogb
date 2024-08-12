@@ -8,6 +8,7 @@ import { fetchActivitiesFromPocketBase } from '../../../utils/law&OrderUtils';
 import { setActivities } from '../../../redux/lawSlice';
 import {setCurrActivity}  from '../../../redux/lawSlice';
 
+
 const Item = ({ title, status, tag, date, onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
     <View style={styles.iconContainer}>
@@ -29,12 +30,7 @@ const Item = ({ title, status, tag, date, onPress }) => (
 const Activities = () => {
   const dispatch = useDispatch();
   const activities = useSelector(state => state?.law?.allActivities);
-  const [sortedActivities, setSortedActivities] = useState([]);
 
-  useEffect(() => {
-    const sorted = [...activities].sort((a, b) => new Date(b.start) - new Date(a.start));
-    setSortedActivities(sorted);
-  }, [activities]);
   // const dispatch = useDispatch();
   // useEffect(() => {
   //   const fetchActivities = async () => {
@@ -53,7 +49,6 @@ const Activities = () => {
   const handleActivityPress = (activity) => {
     router.push({
       pathname: '/forms/lawOrder/readPage',
-      params: { start:activity?.start},
     });
     dispatch(setCurrActivity(activity))
   };
@@ -61,7 +56,7 @@ const Activities = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       {activities ? <FlatList
-        data={[...sortedActivities]}
+        data={[...activities]}
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Item

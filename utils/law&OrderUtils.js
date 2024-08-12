@@ -4,33 +4,50 @@ import { Alert } from 'react-native';
 import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
 export const submitActivityToPocketBase = async (activity) => {
+  // const token = localStorage.getItem('persist:root')
+  // const parsed = JSON.parse(token)
+  // const auth = JSON.parse(parsed.auth)
+  // console.log(auth);
   try {
-    // const formData = new FormData();
-
-    // // Append other activity data
-    // for (const key in activity) {
-    //   if (key !== 'attachments') {
-    //     formData.append(key, activity[key]);
-    //   }
-    // }
-
-    // // Append attachments if they exist
-    // if (activity.attachments) {
-    //   activity.attachments.forEach((attachment, index) => {
-    //     formData.append('attachments', {
-    //       name: attachment.fileName,
-    //       type: attachment.type,
-    //       uri: activity,
-    //     })
-    //   });
-    // }
-
-    if (activity.id !== null) {
-      await pb.collection('gogb_law_incidents').update(activity.id, activity);
-    } else {
-      const response = await pb.collection('gogb_law_incidents').create(activity);
-      activity.id = response.id;
+    const formData = new FormData();
+    // Append other activity data
+    for (const key in activity) {
+      if (key !== 'attachments') {
+        formData.append(key, activity[key]);
+      }
     }
+    // Append attachments if they exist
+    if (activity.attachments) {
+      activity.attachments.forEach(async (attachment, index) => {
+        if (attachment.uri) {
+          const file = { uri: attachment.uri, type: attachment.type, name:attachment.name };
+          formData.append(`attachments`, file);
+        }
+      });
+    }
+    if (activity.id) {
+      await pb.collection('gogb_law_incidents').update(activity.id, formData);
+    } else {
+      await pb.collection('gogb_law_incidents').create(formData);
+    }
+
+    // const url = activity.id
+    //   ? `https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records/${activity.id}`
+    //   : 'https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records'; 
+
+    // const method =  activity.id ? "PATCH": "POST"; 
+    // const response = await fetch(url, {
+    //   method,
+    //   body: formData,
+    //   headers: {
+    //     'Authorization': 'Bearer '+ auth.user.token,
+    //   },
+    // });
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! Status: ${response.status}`);
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   } catch (error) {
     throw new Error('Error submitting activity to PocketBase: ' + error.message);
   }
@@ -46,7 +63,7 @@ export const fetchActivitiesFromPocketBase = async () => {
   }
 };
 
-export const handleActivitySubmission = async (dispatch, newActivity, offlineActivities) => {
+export const handleActivitySubmission = async (dispatch, newActivity, offlineActivities, auth) => {
   const netInfo = await NetInfo.fetch();
 
   if (netInfo.isConnected) {

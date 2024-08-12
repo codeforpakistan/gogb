@@ -15,44 +15,43 @@ import { handleActivitySubmission } from '@/utils/law&OrderUtils';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import AttachmentPreview from '../../../components/attachmentPreview';
 
-// const imgDir = FileSystem.documentDirectory + 'images/';
-// const ensureDirExits = async()=> {
-//   const dirInfo = await FileSystem.getInfoAsync(imgDir);
-//   if(!dirInfo.exists) {
-//     await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
-//   }
-// };
 
 const LawForm = () => {
   useHeaderTitle('Law & Order');
   const dispatch = useDispatch();
-  const { id, start } = useLocalSearchParams();
+  const { id, actStart } = useLocalSearchParams();
   const activities = useSelector((state) => state.law.allActivities);
   const offlineActivities = useSelector((state) => state.law.offlineActivities);
-  const activity = activities?.find((act) => act.start === start) || {};
+  const activity = activities?.find((act) => act.start === actStart) || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaType, setMediaType] = useState('');
 
   const [title, setTitle] = useState(activity?.title || '');
   const [type, setType] = useState(activity?.type || '');
+  const [start, setStart] = useState(activity?.start || dbDate());
+  const [end, setEnd] = useState(activity?.end || '');
   const [location, setLocation] = useState(activity?.location || '');
   const [description, setDescription] = useState(activity?.description || '');
   const [attachments, setAttachments] = useState(activity?.attachments || []);
 
   const handleSubmit = async (id) => {
     const newActivity = {
-      id: id ? id :null,
-      start: dbDate(),
-      end: null,
+      start ,
+      end ,
       title,
       type,
       location,
       description,
       attachments,
-      status: activity.status || '03wo39321evp5os',
+      status:'03wo39321evp5os',
     };
-     await handleActivitySubmission(dispatch, newActivity, offlineActivities);
-      router.back();
+    if (id) {
+      newActivity.id = id
+      await handleActivitySubmission(dispatch, newActivity, offlineActivities);
+    } else {
+      await handleActivitySubmission(dispatch, newActivity, offlineActivities);
+    }
+    router.back();
   };
 
   const openModal = (type) => {
@@ -60,35 +59,64 @@ const LawForm = () => {
     setModalVisible(true);
   };
 
-  // const saveImage = async (uri) => {
-  //   await ensureDirExits();
-  //   const fileName = dbDate() + '.jpg';
-  //   const dest = imgDir + fileName;
-  //   await FileSystem.copyAsync({from:uri, to:dest})
-  //   setAttachments([...attachments, dest])
-  // }
+  const imgDir = FileSystem.documentDirectory + 'gogb/';
+   const ensureDirExits = async()=> {
+   const dirInfo = await FileSystem.getInfoAsync(imgDir);
+   if(!dirInfo.exists) {
+     await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
+   }
+  };
+  const saveFile = async (uri, ext) => {
+    await ensureDirExits();
+    const fileName = dbDate() + ext;
+    const dest = imgDir + fileName;
+    await FileSystem.copyAsync({from:uri, to:dest})
+  }
   
   // Existing image picker function
-  const handlePhotoPick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
+  const handlePhotoPick = async (tool) => {
+  let result;
+   if (tool === 'camera') {
+    result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: false, 
       allowsEditing:false,
     });
     if (!result.canceled) {
-      console.log(result);
-      setAttachments([...attachments, { type:'image' , uri: result.assets[0].uri, name:result.assets[0].fileName }]);
+      saveFile(result.assets[0].uri, '.jpg')
     }
+   }  else {
+      result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false, 
+      allowsEditing:false,
+      });
+   }
+   if (!result.canceled) {
+    setAttachments([...attachments, { type: result.assets[0].mimeType , uri: result.assets[0].uri, name:result.assets[0].fileName, view:'image' }]);
+  }
   };
   
+  
   // New video picker function
-  const handleVideoPick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsMultipleSelection: false, // Not supported by ImagePicker
-    });
+  const handleVideoPick = async (tool) => {
+    let result;
+    if (tool === 'camera') {
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsMultipleSelection: false, 
+      });
+      if (!result.canceled) {
+        saveFile(result.assets[0].uri, '.mp4')
+      }
+    } else {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsMultipleSelection: false, 
+      });
+    }
     if (!result.canceled) {
-      setAttachments([...attachments, { type: 'video', uri: result.assets[0].uri, name:result.assets[0].name }]);
+      setAttachments([...attachments, { type: result.assets[0].mimeType, uri: result.assets[0].uri, name:result.assets[0].name, view:'video'}]);
     }
   };
   
@@ -96,13 +124,19 @@ const LawForm = () => {
   const handleDocumentPick = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ['application/pdf', 'application/vnd.google-apps.document'],
+        type : [
+          'application/pdf',                        
+          'application/vnd.google-apps.document',   
+          'application/msword',                     
+          'text/plain'                              
+        ],
         multiple: false,
       });
   
       if (!result.canceled) {
         const file = result.assets[0];
-        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type }]);
+        console.log(file);
+        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type, view:'document' }]);
       }
     } catch (err) {
       console.error(err);
@@ -115,24 +149,52 @@ const LawForm = () => {
       multiple: true,
     });
     if (!result.canceled) {
-      setAttachments([...attachments, { type: 'audio', uri: result.assets[0].uri, name:result.assets[0].name }]);
+      const file = result.assets[0];
+        console.log(file);
+        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type, view:'audio' }]);
     }
   };
 
-  // const getSelectFunction = () => {
-  //   switch (mediaType) {
-  //     case 'photo':
-  //       return handlePhotoPick;
-  //     case 'audio':
-  //       return handleAudioRecord;
-  //     case 'document':
-  //       return handleDocumentPick;
-  //     case 'video':
-  //       return handleVideoRecord;
-  //     default:
-  //       return () => {};
-  //   }
-  // };
+  const handleRecordAudio = async () => {
+    try {
+      const { status } = await Audio.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access microphone was denied');
+        return;
+      }
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+      );
+      await recording.startAsync();
+      const stopButtonPressed = new Promise((resolve) => {
+        setTimeout(() => resolve(), 30000);
+      });
+      await stopButtonPressed;
+      await recording.stopAndUnloadAsync();
+      const uri = recording.getURI();
+      if (uri) {
+        const savedFilePath = await saveFile(uri, '.m4a'); 
+        setAttachments([...attachments, { uri: savedFilePath, name: dbDate() +'audio.m4a', type: 'audio/m4a', view: 'audio' }]);
+      }
+    } catch (error) {
+      console.error('Error recording audio:', error);
+    }
+  };
+
+  const getSelectFunction = () => {
+    switch (mediaType) {
+      case 'photo':
+        return (tool) => handlePhotoPick(tool);
+      case 'audio':
+        return (type) => (type === 'mic' ? handleRecordAudio() : handleAudioPick());
+      case 'document':
+        return handleDocumentPick;
+      case 'video':
+        return (tool) => handleVideoPick(tool);
+      default:
+        return () => {};
+    }
+  };
 
   const removeAttachment = (index) => {
     const updatedAttachments = [...attachments];
@@ -179,25 +241,25 @@ const LawForm = () => {
         {/* <TouchableOpacity onPress={() => openModal('audio')}>
           <TabBarIcon name="mic-outline" color="#007AFF" />
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={handleAudioPick}>
+        <TouchableOpacity onPress={() => handleAudioPick()}>
           <TabBarIcon name="mic-outline" color="#007AFF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePhotoPick}>
+        <TouchableOpacity onPress={() => openModal('photo')}>
           <TabBarIcon name="camera-outline" color="#007AFF" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleDocumentPick}>
           <TabBarIcon name="document-outline" color="#007AFF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleVideoPick}>
+        <TouchableOpacity onPress={() => openModal('video')}>
           <TabBarIcon name="videocam-outline" color="#007AFF" />
         </TouchableOpacity>
-        {/* <MediaPickerModal
+        <MediaPickerModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
           mediaType={mediaType}
           setModalVisible={setModalVisible}
           onSelect={getSelectFunction()}
-        /> */}
+        />
       </View>
 
       {attachments ? <>
@@ -206,6 +268,7 @@ const LawForm = () => {
         renderItem={({ item, index }) => (
           <AttachmentPreview
             item={item}
+            id={id}
             onRemove={() => removeAttachment(index)}
           />
         )}

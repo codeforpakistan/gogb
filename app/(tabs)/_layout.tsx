@@ -40,6 +40,7 @@ export default function TabLayout() {
           name="user"
           options={{
             title: 'User',
+            tabBarLabel: 'User', 
             headerShown: true,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />

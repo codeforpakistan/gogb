@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getLoctaionTitle, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay, dbDate } from '../../../utils/formatDate';
@@ -7,12 +7,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { handleActivitySubmission } from '../../../utils/law&OrderUtils';
+import AttachmentPreview from '../../../components/attachmentPreview';
 
 const ReadPage = () => {
   // Ensure hooks are always called at the top level
   useHeaderTitle('Activity Details');
   const router = useRouter();
-  const { start } = useLocalSearchParams();
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.law.allActivities);
   const offlineActivities = useSelector((state) => state.law.offlineActivities);
@@ -23,7 +23,7 @@ const ReadPage = () => {
   const handleEdit = (activity) => {
     router.push({
       pathname: '/forms/lawOrder/lawForm',
-      params: {id: activity.id, start: activity.start },
+      params: {id: activity.id, actStart: activity.start },
     });
   };
 
@@ -69,18 +69,35 @@ const ReadPage = () => {
         )}
       </View>
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={()=>handleEdit(activity)} style={styles.iconButton}>
-          <Ionicons name="pencil" size={24} color="#007AFF" />
-          <Text>Edit</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={()=>handleEdit(activity)} style={{ 
+         ...styles.button, 
+            backgroundColor:  '#1DA1F2'
+       }}>
+          <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
         {activity.status !== 'oc1pvgu8gv29bp0' && (
-          <TouchableOpacity onPress={() => handleResolve(activity)} style={styles.iconButton}>
-            <Ionicons name="checkmark-circle" size={24} color="green" />
-            <Text>Resolve</Text>
+          <TouchableOpacity onPress={()=>handleResolve(activity)} style={{ 
+            ...styles.button, 
+            backgroundColor: "#4CAF50" 
+          }}>
+             <Text style={styles.buttonText}>Resolve</Text>
           </TouchableOpacity>
         )}
       </View>
       </> : ""}
+      {activity.attachments ? <>
+        <FlatList
+        data={activity.attachments}
+        renderItem={({ item, index }) => (
+          <AttachmentPreview
+            item={item}
+            id={activity.id}
+            page='details'
+          />
+        )}
+        keyExtractor={(item, index) => index}
+      />
+        </>: ""}
     </ScrollView>
   );
 };
@@ -109,10 +126,23 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    gap:10,
+    marginBottom:20
   },
-  iconButton: {
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 20,
+    borderRadius:3,
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 
