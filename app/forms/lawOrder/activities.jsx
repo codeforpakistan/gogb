@@ -29,20 +29,21 @@ const Item = ({ title, status, tag, date, onPress }) => (
 
 const Activities = () => {
   const dispatch = useDispatch();
-  const activities = useSelector(state => state?.law?.allActivities);
+  let activities = useSelector(state => state?.law?.allActivities);
+  // console.log(activities);
 
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   const fetchActivities = async () => {
-  //     try {
-  //       const activities = await fetchActivitiesFromPocketBase();
-  //       dispatch(setActivities(activities));
-  //     } catch (error) {
-  //       console.error("Failed to fetch activities", error);
-  //     }            
-  //   };
-  //   fetchActivities();
-  // }, [dispatch]);
+  if (activities && activities.length === 0) {
+   const fetchActivities = async () => {
+     try {
+       activities = await fetchActivitiesFromPocketBase();
+       dispatch(setActivities(activities));
+     } catch (error) {
+       console.error("Failed to fetch activities", error);
+     }            
+   };
+   fetchActivities();
+  }
+ 
   
   const router = useRouter();
 

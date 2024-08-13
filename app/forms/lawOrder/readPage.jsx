@@ -59,6 +59,7 @@ const ReadPage = () => {
         <Text style={styles.detailText}>Type: {getTypeTitle(activity.type) || ""}</Text>
         <Text style={styles.detailText}>Location: {getLoctaionTitle(activity.location) || ""}</Text>
         <Text style={styles.detailText}>Description: {activity.description}</Text>
+        <Text style={styles.detailText}>Created: {dateDisplay(activity.start) || ""}  </Text>
         <Text style={styles.detailText}>
           Status: {activity.status === 'oc1pvgu8gv29bp0' ? 'Resolved' : 'Open'}
         </Text>

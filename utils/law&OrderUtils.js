@@ -56,10 +56,10 @@ export const submitActivityToPocketBase = async (activity) => {
 
 export const fetchActivitiesFromPocketBase = async () => {
   try {
-    const activities = await pb.collection('gogb_law_incidents').getFullList();
+    const activities = await pb.collection('gogb_law_incidents').getFullList({sort:'-start'});
     return activities;
   } catch (error) {
-    throw new Error('Error fetching activities from PocketBase: ' + error.message);
+    console.log('Error fetching activities from PocketBase: ' + error.message);
   }
 };
 
