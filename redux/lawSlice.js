@@ -36,6 +36,10 @@ const lawSlice = createSlice({
     clearOfflineActivities: (state) => {
       state.offlineActivities = [];
     },
+    setOfflineActivities: (state, action) => {
+      state.offlineActivities = action.payload;
+      state.allActivities = [...state.activities, ...state.offlineActivities];
+    },
     setActivities: (state, action) => {
       state.activities = action.payload;
       state.allActivities = [...state.activities, ...state.offlineActivities];
@@ -46,7 +50,7 @@ const lawSlice = createSlice({
   },
 });
 
-export const { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities, setCurrActivity} = lawSlice.actions;
+export const { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities, setOfflineActivities, setCurrActivity} = lawSlice.actions;
 export default lawSlice.reducer;
 
 
