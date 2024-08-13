@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "gogb",
     "userInterfaceStyle": "automatic",
+    "entryPoint" : "./app/(tabs)/index.jsx",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
