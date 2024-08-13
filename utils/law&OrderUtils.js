@@ -69,12 +69,19 @@ export const handleActivitySubmission = async (dispatch, newActivity, offlineAct
   if (netInfo.isConnected) {
     try {
       await submitActivityToPocketBase(newActivity);
-
-      if (offlineActivities.length > 0) {
-        for (const offlineActivity of offlineActivities) {
-          await submitActivityToPocketBase(offlineActivity);
+      try {
+        if (offlineActivities.length > 0) {
+          try {
+            for (const offlineActivity of offlineActivities) {
+              await submitActivityToPocketBase(offlineActivity);
+            }
+            dispatch(clearOfflineActivities());
+          } catch (error) {
+            console.log(error)
+          }
         }
-        dispatch(clearOfflineActivities());
+      } catch (error) {
+        console.log(error);
       }
       const activities =  await fetchActivitiesFromPocketBase();
       dispatch(setActivities(activities))

@@ -116,7 +116,7 @@ const LawForm = () => {
       });
     }
     if (!result.canceled) {
-      setAttachments([...attachments, { type: result.assets[0].mimeType, uri: result.assets[0].uri, name:result.assets[0].name, view:'video'}]);
+      setAttachments([...attachments, { type: result.assets[0].mimeType , uri: result.assets[0].uri, name:result.assets[0].fileName, view:'video' }]);
     }
   };
   
@@ -135,8 +135,8 @@ const LawForm = () => {
   
       if (!result.canceled) {
         const file = result.assets[0];
-        console.log(file);
-        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type, view:'document' }]);
+        // console.log(file);
+        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.mimeType, view:'document' }]);
       }
     } catch (err) {
       console.error(err);
@@ -151,7 +151,7 @@ const LawForm = () => {
     if (!result.canceled) {
       const file = result.assets[0];
         console.log(file);
-        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.type, view:'audio' }]);
+        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.mimeType, view:'audio' }]);
     }
   };
 

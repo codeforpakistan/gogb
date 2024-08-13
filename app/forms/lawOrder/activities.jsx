@@ -30,6 +30,9 @@ const Item = ({ title, status, tag, date, onPress }) => (
 const Activities = () => {
   const dispatch = useDispatch();
   let activities = useSelector(state => state?.law?.allActivities);
+  const sortedActivities = activities ? activities.slice().sort((a, b) => {
+    return new Date(b.start) - new Date(a.start);
+  }) : [];
   // console.log(activities);
 
   if (activities && activities.length === 0) {
@@ -56,7 +59,7 @@ const Activities = () => {
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
-      {activities ? <FlatList
+      {sortedActivities ? <FlatList
         data={[...activities]}
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
