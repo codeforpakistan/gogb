@@ -1,17 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { useLocalSearchParams, router } from 'expo-router';
-// import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-// import {dbDate } from '@/utils/formatDate';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocalSearchParams, router } from 'expo-router';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import {dbDate } from '@/utils/formatDate';
+import LocationDropdown from '@/components/locationDropdown';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const PriceControlForm = () => {
-  useHeaderTitle('Price Control');
+  useHeaderTitle('Price Control Form');
+  const dispatch = useDispatch();
+  const { id, actStart } = useLocalSearchParams();
+  const activities = useSelector((state) => state.law.allActivities);
+  const offlineActivities = useSelector((state) => state.law.offlineActivities);
+  const activity = activities?.find((act) => act.start === actStart) || {};
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mediaType, setMediaType] = useState('');
+
+  const [title, setTitle] = useState(activity?.title || '');
+  const [type, setType] = useState(activity?.type || '');
+  const [start, setStart] = useState(activity?.start || dbDate());
+  const [end, setEnd] = useState(activity?.end || '');
+  const [location, setLocation] = useState(activity?.location || '');
+  const [description, setDescription] = useState(activity?.description || '');
+  const [attachments, setAttachments] = useState(activity?.attachments || []);
   return (
-    <View>
-      <Text>price control form</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Price Control Form</Text>
+      </View>
+
+      <Text style={styles.label}>Location</Text>
+      <LocationDropdown
+        value={location}
+        onValueChange={setLocation}
+      />
+
+      <Text style={styles.label}>Date and Time</Text>
+      <RNDateTimePicker display="spinner" />
+      
+      <Text style={styles.label}>Description</Text>
+      <TextInput
+        style={[styles.input, { height: 100 }]}
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Enter activity description"
+        multiline
+      />
+      <Button title="Submit" onPress={()=>handleSubmit(id)} />
     </View>
   )
 };
