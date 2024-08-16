@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList, Alert, Pressable, Platform } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList, Alert, Pressable, Platform, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocalSearchParams, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -47,93 +47,162 @@ const PriceControlForm = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Price Control Form</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>New Inspection</Text>
+          </View>
 
-      <Text style={styles.label}>Location</Text>
-      <LocationDropdown
-        value={location}
-        onValueChange={setLocation}
-      />
+          <View>
+            <Text style={styles.label}>Location</Text>
+            <LocationDropdown
+              value={location}
+              onValueChange={setLocation}
+            />
+          </View>
 
-      <Text style={styles.label}>Date</Text>
-      {showPicker && (
-        <DateTimePicker
-          value={date}
-          mode={'date'}
-          display='spinner'
-          onChange={onChange}
-          style={styles.datePicker}
-        />
-      )}
-      {showPicker && Platform.OS === "ios" && (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around"
-          }}
-        >
-          <TouchableOpacity style={[
-            styles.button,
-            styles.pickerButton,
-            {backgroundColor: "#11182711"}
-          ]}
-            onPress={toggleDatePicker}
-          >
-            <Text 
-              style={[
-                styles.buttonText,
-                {color: "#075985"}
-              ]}
-              >Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[
-            styles.button,
-            styles.pickerButton,
-          ]}
-            onPress={confirmDateOfList}
-          >
-            <Text 
-              style={[
-                styles.buttonText,
-              ]}
-              >Confirm</Text>
-          </TouchableOpacity>
+          <View>
+            <Text style={styles.label}>Date</Text>
+            {showPicker && (
+              <DateTimePicker
+                value={date}
+                mode={'date'}
+                display='spinner'
+                onChange={onChange}
+                style={styles.datePicker}
+              />
+            )}
+            {showPicker && Platform.OS === "ios" && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around"
+                }}
+              >
+                <TouchableOpacity style={[
+                  styles.button,
+                  styles.pickerButton,
+                  {backgroundColor: "#11182711"}
+                ]}
+                  onPress={toggleDatePicker}
+                >
+                  <Text 
+                    style={[
+                      styles.buttonText,
+                      {color: "#075985"}
+                    ]}
+                  >Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[
+                  styles.button,
+                  styles.pickerButton,
+                ]}
+                  onPress={confirmDateOfList}
+                >
+                  <Text 
+                    style={[
+                      styles.buttonText,
+                    ]}
+                    >Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {!showPicker && (
+              <Pressable onPress={toggleDatePicker}>
+                <TextInput
+                  style={styles.input}
+                  placeholder='Select date'
+                  value={dateOfList}
+                  onChangeText={setDateOfList}
+                  placeholderTextColor='#11182744'
+                  editable={false}
+                  onPressIn={toggleDatePicker}
+                />
+              </Pressable>
+            )}
+          </View>
+
+          <View>
+            <Text style={styles.label}>Shops Visited</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter shops visited"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>Arrests Made</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter arrests made"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>Violations</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter violations"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>Compliances</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter compliances"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>Fines Issued</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter fines issued"
+            />
+          </View>
+          
+          <View>
+            <Text style={styles.label}>Warnings Issued</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter warnings issued"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>Shops Sealed</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter shops sealed"
+            />
+          </View>
+
+          <View>
+            <Text style={styles.label}>FIRs Registered</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter FIRs registered"
+            />
+          </View>
+
+          <View>
+            <Button title="Submit" onPress={()=>handleSubmit(id)} />
+          </View>
         </View>
-      )}
-      {!showPicker && (
-        <Pressable onPress={toggleDatePicker}>
-          <TextInput
-            style={styles.input}
-            placeholder='Select date and time'
-            value={dateOfList}
-            onChangeText={setDateOfList}
-            placeholderTextColor='#11182744'
-            editable={false}
-            onPressIn={toggleDatePicker}
-          />
-        </Pressable>
-      )}
-      
-      <Text style={styles.label}>Description</Text>
-      <TextInput
-        style={[styles.input, { height: 100 }]}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Enter activity description"
-        multiline
-      />
-      <Button title="Submit" onPress={()=>handleSubmit(id)} />
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: StatusBar.currentHeight,
+    paddingTop: StatusBar.currentHeight,
   },
   header: {
     flexDirection: 'row',
