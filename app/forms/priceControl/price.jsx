@@ -3,6 +3,7 @@ import React from 'react'
 import { useRouter } from 'expo-router';
 import useHeaderTitle from '@/hooks/useHeaderTitle'
 import FloatingButton from '../../../components/floatingButton';
+import Inspections from './inspections';
 
 const price = () => {
   useHeaderTitle('Price Control');
@@ -17,7 +18,7 @@ const price = () => {
 
   return (
     <View style={styles.container}>
-      <Text>price</Text>
+      <Inspections />
       <FloatingButton onPress={handlePress} />
     </View>
   )
