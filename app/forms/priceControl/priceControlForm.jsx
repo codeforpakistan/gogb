@@ -7,24 +7,34 @@ import {dbDate } from '@/utils/formatDate';
 import LocationDropdown from '@/components/locationDropdown';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import moment from "moment";
+import AttachmentPreview from '../../../components/attachmentPreview';
 
 
 const PriceControlForm = () => {
   useHeaderTitle('Price Control Form');
   const dispatch = useDispatch();
-  const { id, actStart } = useLocalSearchParams();
-  const activities = useSelector((state) => state.law.allActivities);
-  const offlineActivities = useSelector((state) => state.law.offlineActivities);
-  const activity = activities?.find((act) => act.start === actStart) || {};
-  const [modalVisible, setModalVisible] = useState(false);
+  const { id } = useLocalSearchParams();
   const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
   const [dateOfList, setDateOfList] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
-  const [location, setLocation] = useState(activity?.location || '');
-  const [description, setDescription] = useState(activity?.description || '');
+  const [timeOfList, setTimeOfList] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [shopsVisited, setShopsVisited] = useState('');
+  const [shopsSealed, setShopsSealed] = useState('');
+  const [violations, setViolations] = useState('');
+  const [compliances, setCompliances] = useState('');
+  const [warningsIssued, setWarningsIssued] = useState('');
+  const [arrestsMade, setArrestsMade] = useState('');
+  const [fIRsRegistered, setFIRsRegistered] = useState('');
+  const [finesIssued, setFinesIssued] = useState('');
+  const [location, setLocation] = useState('');
+  const [attachments, setAttachments] = useState([]);
   const toggleDatePicker = () => {
-    setShowPicker(!showPicker);
+    setShowDatePicker(!showDatePicker);
+  }
+  const toggleTimePicker = () => {
+    setShowTimePicker(!showTimePicker);
   }
 
   const onChange = ({ type }, selectedDate) => {
@@ -41,153 +51,247 @@ const PriceControlForm = () => {
     }
   }
 
+  const onChangeTime = ({ type }, selectedTime) => {
+    if (type == 'set') {
+      const currentTime = selectedTime;
+      setTime(currentTime);
+
+      if (Platform.OS === 'android') {
+        toggleTimePicker();
+        setTimeOfList(currentTime.toTimeString());
+      }
+    } else {
+      toggleTimePicker();
+    }
+  }
+
   const confirmDateOfList = () => {
     setDateOfList(currentDate.toDateString());
     toggleDatePicker();
   }
 
+  const confirmTimeOfList = () => {
+    setTimeOfList(currentTime.toTimeString());
+    toggleTimePicker();
+  }
+
+  const handleSubmit = async () => {
+    router.back();
+  };
+
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>New Inspection</Text>
           </View>
 
-          <View>
-            <Text style={styles.label}>Location</Text>
-            <LocationDropdown
-              value={location}
-              onValueChange={setLocation}
-            />
-          </View>
-
-          <View>
-            <Text style={styles.label}>Date</Text>
-            {showPicker && (
-              <DateTimePicker
-                value={date}
-                mode={'date'}
-                display='spinner'
-                onChange={onChange}
-                style={styles.datePicker}
+          <View style={styles.itemContainerFull}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Location</Text>
+              <LocationDropdown
+                value={location}
+                onValueChange={setLocation}
               />
-            )}
-            {showPicker && Platform.OS === "ios" && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-around"
-                }}
-              >
-                <TouchableOpacity style={[
-                  styles.button,
-                  styles.pickerButton,
-                  {backgroundColor: "#11182711"}
-                ]}
-                  onPress={toggleDatePicker}
-                >
-                  <Text 
-                    style={[
-                      styles.buttonText,
-                      {color: "#075985"}
-                    ]}
-                  >Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[
-                  styles.button,
-                  styles.pickerButton,
-                ]}
-                  onPress={confirmDateOfList}
-                >
-                  <Text 
-                    style={[
-                      styles.buttonText,
-                    ]}
-                    >Confirm</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            {!showPicker && (
-              <Pressable onPress={toggleDatePicker}>
-                <TextInput
-                  style={styles.input}
-                  placeholder='Select date'
-                  value={dateOfList}
-                  onChangeText={setDateOfList}
-                  placeholderTextColor='#11182744'
-                  editable={false}
-                  onPressIn={toggleDatePicker}
+            </View>
+          </View>
+
+          <View style={styles.itemContainerHalf}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Date</Text>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  display='spinner'
+                  onChange={onChange}
+                  style={styles.datePicker}
                 />
-              </Pressable>
-            )}
+              )}
+              {showDatePicker && Platform.OS === "ios" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around"
+                  }}
+                >
+                  <TouchableOpacity style={[
+                    styles.button,
+                    styles.pickerButton,
+                    {backgroundColor: "#11182711"}
+                  ]}
+                    onPress={toggleDatePicker}
+                  >
+                    <Text 
+                      style={[
+                        styles.buttonText,
+                        {color: "#075985"}
+                      ]}
+                    >Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[
+                    styles.button,
+                    styles.pickerButton,
+                  ]}
+                    onPress={confirmDateOfList}
+                  >
+                    <Text 
+                      style={[
+                        styles.buttonText,
+                      ]}
+                      >Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {!showDatePicker && (
+                <Pressable onPress={toggleDatePicker}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Select date'
+                    value={dateOfList}
+                    onChangeText={setDateOfList}
+                    placeholderTextColor='#11182744'
+                    editable={false}
+                    onPressIn={toggleDatePicker}
+                  />
+                </Pressable>
+              )}
+            </View>
           </View>
+          <View style={styles.itemContainerHalf}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Time</Text>
+              {showTimePicker && (
+                <DateTimePicker
+                  value={time}
+                  mode={'time'}
+                  display='spinner'
+                  onChange={onChangeTime}
+                  style={styles.timePicker}
+                />
+              )}
+              {showTimePicker && Platform.OS === "ios" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around"
+                  }}
+                >
+                  <TouchableOpacity style={[
+                    styles.button,
+                    styles.pickerButton,
+                    {backgroundColor: "#11182711"}
+                  ]}
+                    onPress={toggleTimePicker}
+                  >
+                    <Text 
+                      style={[
+                        styles.buttonText,
+                        {color: "#075985"}
+                      ]}
+                    >Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[
+                    styles.button,
+                    styles.pickerButton,
+                  ]}
+                    onPress={confirmTimeOfList}
+                  >
+                    <Text 
+                      style={[
+                        styles.buttonText,
+                      ]}
+                      >Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {!showTimePicker && (
+                <Pressable onPress={toggleTimePicker}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Select time'
+                    value={timeOfList}
+                    onChangeText={setTimeOfList}
+                    placeholderTextColor='#11182744'
+                    editable={false}
+                    onPressIn={toggleTimePicker}
+                  />
+                </Pressable>
+              )}
+            </View>
+          </View>
+          {/* Shops visited = Compliances + Violations */}
+          {/* Violations = Arrests Made + Warnings + FIRs + shops sealed */}
+          <View style={styles.itemContainerFull}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Shops Visited</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter shops visited"
+              />
+            </View>
+          </View>
+          <View style={styles.itemContainerHalf}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Shops Sealed</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter shops sealed"
+              />
+            </View>
+            <View style={styles.item}>
+              <Text style={styles.label}>Compliances</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter compliances"
+              />
+            </View>
 
-          <View>
-            <Text style={styles.label}>Shops Visited</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter shops visited"
-            />
+            <View style={styles.item}>
+              <Text style={styles.label}>Arrests Made</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter arrests made"
+              />
+            </View>
           </View>
+          <View style={styles.itemContainerHalf}>
+            <View style={styles.item}>
+              <Text style={styles.label}>Violations</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter violations"
+              />
+            </View>
+            
+            <View style={styles.item}>
+              <Text style={styles.label}>Warnings Issued</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter warnings issued"
+              />
+            </View>
 
-          <View>
-            <Text style={styles.label}>Arrests Made</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter arrests made"
-            />
+            <View style={styles.item}>
+              <Text style={styles.label}>FIRs Registered</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter FIRs registered"
+              />
+            </View>
           </View>
-
-          <View>
-            <Text style={styles.label}>Violations</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter violations"
-            />
+          <View style={styles.itemContainerFull}>
+          <View style={styles.item}>
+              <Text style={styles.label}>Fines Issued</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter fines issued"
+              />
+            </View>
           </View>
-
-          <View>
-            <Text style={styles.label}>Compliances</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter compliances"
-            />
-          </View>
-
-          <View>
-            <Text style={styles.label}>Fines Issued</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter fines issued"
-            />
-          </View>
-          
-          <View>
-            <Text style={styles.label}>Warnings Issued</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter warnings issued"
-            />
-          </View>
-
-          <View>
-            <Text style={styles.label}>Shops Sealed</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter shops sealed"
-            />
-          </View>
-
-          <View>
-            <Text style={styles.label}>FIRs Registered</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter FIRs registered"
-            />
-          </View>
-
-          <View>
+          <View style={styles.itemContainerFull}>
             <Button title="Submit" onPress={()=>handleSubmit(id)} />
           </View>
         </View>
@@ -199,16 +303,43 @@ const PriceControlForm = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: StatusBar.currentHeight,
-    paddingTop: StatusBar.currentHeight,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start',
+  },
+  itemContainerFull: {
+    width: '100%',
+    paddingLeft: 20,
+    paddingRight: 20,
+    height: '100px'
+  },
+  itemContainerHalf: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    width: '50%',
+    height: '100px'
+  },
+  itemContainer1by3: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    width: '33%', // 50% -> 2 columns | 33% -> 3 columns | 25% -> 4 columns
+    height: '100px'
+  },
+  itemContainer1by4: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    width: '25%',
+    height: '100px'
+  },
+  item: {
+    padding: '8px',
+    margin: '8px',
+    backgroundColor: '#EEEEEE',
+    height: "calc(100% - 8px)"
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 20,
   },
   title: {
     fontSize: 20,
@@ -231,6 +362,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    backgroundColor: '#fff',
     padding: 10,
     marginBottom: 15,
     borderRadius: 5,
@@ -258,6 +390,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   datePicker: {
+    width: 120,
+    marginTop: -10,
+  },
+  timePicker: {
     width: 120,
     marginTop: -10,
   },
