@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
-import { getInitials, getTypeTitle } from '../../../utils/Ui';
+import { getInitials, getLoctaionTitle, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay } from '../../../utils/formatDate';
 import { fetchInspectionsFromPocketBase } from '../../../utils/priceControlUtils';
 import { setInspections } from '../../../redux/priceControlSlice';
@@ -15,9 +15,9 @@ const Item = ({ location, shopsVisited, date, onPress }) => (
       <Text style={styles.iconText}>{getInitials("Shops Visited") || ""}</Text>
     </View>
     <View style={styles.textContainer}>
-      <Text style={styles.title}>{location}</Text>
-      <Text style={styles.shopsVisited}>{getTypeTitle(shopsVisited)|| ""}</Text>
-      <Text style={styles.shopsVisited}>
+      <Text style={styles.title}>{getLoctaionTitle(location)}</Text>
+      <Text style={styles.shopsVisited}>Shops Visited: {shopsVisited}</Text>
+      <Text style={styles.datetime}>
         {dateDisplay(date) || ""}
       </Text>
     </View>
@@ -48,7 +48,7 @@ const Inspections = () => {
 
   const handleInspectionPress = (inspection) => {
     router.push({
-      pathname: '/forms/lawOrder/readPage',
+      pathname: '/forms/priceControl/readPage',
     });
     dispatch(setCurrInspection(inspection))
   };
@@ -61,7 +61,7 @@ const Inspections = () => {
         renderItem={({ item }) => (
           <Item
             location={item.location}
-            shopsVisited={item.shopsVisited}
+            shopsVisited={item.shops_visited}
             date={item.datetime}
             onPress={() => handleInspectionPress(item)}
           />
@@ -119,6 +119,10 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   shopsVisited: {
+    fontSize: 14,
+    color: '#444',
+  },
+  datetime: {
     fontSize: 12,
     color: '#999',
   },
