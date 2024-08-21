@@ -60,7 +60,7 @@ const Activities = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       {sortedActivities ? <FlatList
-        data={[...activities]}
+        data={[...sortedActivities]}
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Item
