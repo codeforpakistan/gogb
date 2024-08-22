@@ -118,3 +118,5 @@ Thumbs.db
 # expo-env.d.ts
 expo-env.d.ts
 # @end expo-cli
+android
+ios

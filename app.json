@@ -1,12 +1,14 @@
 {
   "expo": {
-    "name": "GOGB",
-    "slug": "GOGB",
+    "owner": "codeforpakistan",
+    "name": "GoGB",
+    "slug": "gogb",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "gogb",
     "userInterfaceStyle": "automatic",
+    "entryPoint" : "./app/(tabs)/index.jsx",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -28,7 +30,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.farooqwd.GOGB"
+      "package": "com.codeforpakistan.GoGB"
     },
     "web": {
       "bundler": "metro",
@@ -46,7 +48,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "bc738fb4-edfa-441e-8b1c-315b9715f85d"
+        "projectId": "63cd5fc6-3c53-4635-aa39-b49d7d59a543"
       }
     }
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, FlatList, Image, StyleSheet, View } from 'react-native';
+import { Text, FlatList, Image, StyleSheet, View, AppRegistry } from 'react-native';
 import { Link } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 
@@ -30,6 +30,7 @@ const Index = () => {
     />
   );
 };
+AppRegistry.registerComponent('Go GB', () => Index);
 
 const styles = StyleSheet.create({
   grid: {
@@ -62,5 +63,4 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
-
 export default Index;
