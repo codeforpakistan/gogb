@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, FlatList }
 import { Ionicons } from '@expo/vector-icons';
 import { getLoctaionTitle, getTypeTitle } from '../../../utils/Ui';
 import { dateDisplay, dbDate } from '../../../utils/formatDate';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, router } from 'expo-router';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { handleActivitySubmission } from '../../../utils/law&OrderUtils';
+import { deleteActivity, handleActivitySubmission } from '../../../utils/law&OrderUtils';
 import AttachmentPreview from '../../../components/attachmentPreview';
 
 const ReadPage = () => {
@@ -48,6 +48,27 @@ const ReadPage = () => {
     );
   };
 
+  const handleDelete = (activity) => {
+    console.log('Delete button pressed');
+    Alert.alert(
+      'Resolve Activity',
+      'Are you sure you want to Delete this activity permanently?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: async () => {
+            await deleteActivity(dispatch, 'gogb_law_incidents', activity, offlineActivities)
+          },
+        },
+      ]
+    );
+    router.back();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -75,6 +96,12 @@ const ReadPage = () => {
             backgroundColor:  '#1DA1F2'
        }}>
           <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>handleDelete(activity)} style={{ 
+         ...styles.button, 
+            backgroundColor:  '#F44336'
+       }}>
+          <Text style={styles.buttonText}>Delete</Text>
       </TouchableOpacity>
         {activity.status !== 'oc1pvgu8gv29bp0' && (
           <TouchableOpacity onPress={()=>handleResolve(activity)} style={{ 

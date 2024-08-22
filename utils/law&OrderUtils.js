@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import pb from '../pocketbaseClient';
 import { Alert } from 'react-native';
-import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
+import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
 export const submitActivityToPocketBase = async (activity) => {
   // const token = localStorage.getItem('persist:root')
@@ -60,6 +60,23 @@ export const fetchActivitiesFromPocketBase = async () => {
     return activities;
   } catch (error) {
     console.log('Error fetching activities from PocketBase: ' + error.message);
+  }
+};
+
+export const deleteActivity = async (dispatch, collectionName, activity, offlineActivities) => {
+  try {
+    if (activity.id) {
+      await pb.collection(collectionName).delete(activity.id);
+      const activities =  await fetchActivitiesFromPocketBase();
+      dispatch(setActivities(activities))
+    } else {
+      const updatedOfflineActivities = offlineActivities.filter(
+        offlineActivity => offlineActivity.start === activity.start
+      );
+      dispatch(setOfflineActivities(updatedOfflineActivities));
+    }
+  } catch (error) {
+    console.error('Error deleting activity:', error);
   }
 };
 
