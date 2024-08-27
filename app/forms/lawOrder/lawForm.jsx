@@ -75,26 +75,34 @@ const LawForm = () => {
   
   // Existing image picker function
   const handlePhotoPick = async (tool) => {
-  let result;
-   if (tool === 'camera') {
-    result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false, 
-      allowsEditing:false,
-    });
-    if (!result.canceled) {
-      saveFile(result.assets[0].uri, '.jpg')
-    }
-   }  else {
-      result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false, 
-      allowsEditing:false,
+    let result;
+    if (tool === 'camera') {
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: false, 
+        allowsEditing:false,
       });
-   }
-   if (!result.canceled) {
-    setAttachments([...attachments, { type: result.assets[0].mimeType , uri: result.assets[0].uri, name:result.assets[0].fileName, view:'image' }]);
-  }
+      if (!result.canceled) {
+        await saveFile(result.assets[0].uri, '.jpg');
+        setAttachments([...attachments, { type: result.assets[0].mimeType, uri: result.assets[0].uri, name: result.assets[0].fileName, view: 'image' }]);
+      }
+    } else {
+        result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true, 
+        allowsEditing:false,
+        });
+    }
+    if (!result.canceled) {
+      const newAttachments = result.assets.map(asset => ({
+        type: asset.mimeType,
+        uri: asset.uri,
+        name: asset.fileName,
+        view: 'image',
+      }));
+      setAttachments([...attachments, ...newAttachments]);
+
+    }
   };
   
   
@@ -107,16 +115,23 @@ const LawForm = () => {
         allowsMultipleSelection: false, 
       });
       if (!result.canceled) {
-        saveFile(result.assets[0].uri, '.mp4')
+        await saveFile(result.assets[0].uri, '.mp4');
+        setAttachments([...attachments, { type: result.assets[0].mimeType, uri: result.assets[0].uri, name: result.assets[0].fileName, view: 'video' }]);
       }
     } else {
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-        allowsMultipleSelection: false, 
+        allowsMultipleSelection: true, 
       });
     }
     if (!result.canceled) {
-      setAttachments([...attachments, { type: result.assets[0].mimeType , uri: result.assets[0].uri, name:result.assets[0].fileName, view:'video' }]);
+      const newAttachments = result.assets.map(asset => ({
+        type: asset.mimeType,
+        uri: asset.uri,
+        name: asset.fileName,
+        view: 'video',
+      }));
+      setAttachments([...attachments, ...newAttachments]);
     }
   };
   
@@ -130,13 +145,17 @@ const LawForm = () => {
           'application/msword',                     
           'text/plain'                              
         ],
-        multiple: false,
+        multiple: true,
       });
   
       if (!result.canceled) {
-        const file = result.assets[0];
-        // console.log(file);
-        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.mimeType, view:'document' }]);
+        const newAttachments = result.assets.map(asset => ({
+          uri: asset.uri,
+          name: asset.name,
+          type: asset.mimeType,
+          view: 'document',
+        }));
+        setAttachments([...attachments, ...newAttachments]);
       }
     } catch (err) {
       console.error(err);
@@ -149,9 +168,13 @@ const LawForm = () => {
       multiple: true,
     });
     if (!result.canceled) {
-      const file = result.assets[0];
-        console.log(file);
-        setAttachments([...attachments, { uri: file.uri, name: file.name, type: file.mimeType, view:'audio' }]);
+      const newAttachments = result.assets.map(asset => ({
+        uri: asset.uri,
+        name: asset.name,
+        type: asset.mimeType,
+        view: 'audio',
+      }));
+      setAttachments([...attachments, ...newAttachments]);
     }
   };
 
