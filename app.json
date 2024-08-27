@@ -8,7 +8,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "gogb",
     "userInterfaceStyle": "automatic",
-    "entryPoint" : "./app/(tabs)/index.jsx",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -18,7 +17,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app needs access to your microphone for audio record."
-      }
+      },
+      "bundleIdentifier": "com.codeforpakistan.GoGB"
     },
     "android": {
       "permissions": [
