@@ -4,10 +4,6 @@ import { Alert } from 'react-native';
 import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
 export const submitActivityToPocketBase = async (activity) => {
-  // const token = localStorage.getItem('persist:root')
-  // const parsed = JSON.parse(token)
-  // const auth = JSON.parse(parsed.auth)
-  // console.log(auth);
   try {
     const formData = new FormData();
     // Append other activity data
@@ -30,24 +26,6 @@ export const submitActivityToPocketBase = async (activity) => {
     } else {
       await pb.collection('gogb_law_incidents').create(formData);
     }
-
-    // const url = activity.id
-    //   ? `https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records/${activity.id}`
-    //   : 'https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records'; 
-
-    // const method =  activity.id ? "PATCH": "POST"; 
-    // const response = await fetch(url, {
-    //   method,
-    //   body: formData,
-    //   headers: {
-    //     'Authorization': 'Bearer '+ auth.user.token,
-    //   },
-    // });
-    // if (!response.ok) {
-    //   throw new Error(`HTTP error! Status: ${response.status}`);
-    // }
-    // const responseData = await response.json();
-    // return responseData;
   } catch (error) {
     throw new Error('Error submitting activity to PocketBase: ' + error.message);
   }
