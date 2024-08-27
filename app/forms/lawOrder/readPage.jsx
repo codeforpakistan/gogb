@@ -76,7 +76,11 @@ const ReadPage = () => {
         <Text style={styles.detailText}>
           Status: {activity.status === 'oc1pvgu8gv29bp0' ? 'Resolved' : 'Open'}
         </Text>
+        <Text style={styles.detailText}>
+          Action Taken: {activity.actionTaken === '' ? 'N/A' : activity.actionTaken}
+        </Text>
         {activity.status === 'oc1pvgu8gv29bp0' && (
+          
           <Text style={styles.detailText}>
             Resolved: {dateDisplay(activity.end) || ""} 
           </Text>
