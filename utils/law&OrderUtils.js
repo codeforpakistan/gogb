@@ -1,13 +1,11 @@
 import NetInfo from '@react-native-community/netinfo';
 import pb from '../pocketbaseClient';
 import { Alert } from 'react-native';
+import { uriToBlob } from './helpers'; // Adjust the path as necessary
 import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
+
 export const submitActivityToPocketBase = async (activity) => {
-  // const token = localStorage.getItem('persist:root')
-  // const parsed = JSON.parse(token)
-  // const auth = JSON.parse(parsed.auth)
-  // console.log(auth);
   try {
     const formData = new FormData();
     // Append other activity data
@@ -18,36 +16,27 @@ export const submitActivityToPocketBase = async (activity) => {
     }
     // Append attachments if they exist
     if (activity.attachments) {
-      activity.attachments.forEach(async (attachment, index) => {
+      for (let i = 0; i < activity.attachments.length; i++) {
+        const attachment = activity.attachments[i];
         if (attachment.uri) {
-          const file = { uri: attachment.uri, type: attachment.type, name:attachment.name };
-          formData.append(`attachments`, file);
+          formData.append('attachments', {
+            uri: attachment.uri,
+            type: attachment.type || 'application/octet-stream',
+            name: attachment.name || `attachment-${i}`,
+          });
+          console.log('Appended to FormData:', attachment.name, attachment.type, attachment.uri);
         }
-      });
+      }
     }
+
+    console.log('Final FormData:', formData);
     if (activity.id) {
-      await pb.collection('gogb_law_incidents').update(activity.id, formData);
+      const response = await pb.collection('gogb_law_incidents').update(activity.id, formData);
+      console.log('Server response:', response);
     } else {
-      await pb.collection('gogb_law_incidents').create(formData);
+      const response = await pb.collection('gogb_law_incidents').create(formData);
+      console.log('Server response:', response);
     }
-
-    // const url = activity.id
-    //   ? `https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records/${activity.id}`
-    //   : 'https://pb.codeforpakistan.org/api/collections/gogb_law_incidents/records'; 
-
-    // const method =  activity.id ? "PATCH": "POST"; 
-    // const response = await fetch(url, {
-    //   method,
-    //   body: formData,
-    //   headers: {
-    //     'Authorization': 'Bearer '+ auth.user.token,
-    //   },
-    // });
-    // if (!response.ok) {
-    //   throw new Error(`HTTP error! Status: ${response.status}`);
-    // }
-    // const responseData = await response.json();
-    // return responseData;
   } catch (error) {
     throw new Error('Error submitting activity to PocketBase: ' + error.message);
   }

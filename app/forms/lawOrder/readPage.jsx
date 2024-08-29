@@ -8,6 +8,7 @@ import useHeaderTitle from '@/hooks/useHeaderTitle';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { deleteActivity, handleActivitySubmission } from '../../../utils/law&OrderUtils';
 import AttachmentPreview from '../../../components/attachmentPreview';
+import ActionTakenModal from './actionTakenModal';
 
 const ReadPage = () => {
   // Ensure hooks are always called at the top level
@@ -17,6 +18,8 @@ const ReadPage = () => {
   const activities = useSelector((state) => state.law.allActivities);
   const offlineActivities = useSelector((state) => state.law.offlineActivities);
   const activity = useSelector((state) => state.law.currActivity);
+  const [alertVisible, setAlertVisible] = useState(false);
+
   console.log(activity);
 
   // Function handlers should be defined outside of the render logic
@@ -29,23 +32,12 @@ const ReadPage = () => {
 
   const handleResolve = (activity) => {
     console.log('Resolve button pressed');
-    Alert.alert(
-      'Resolve Activity',
-      'Are you sure you want to mark this activity as resolved?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Confirm',
-          onPress: () => {
-            const newActivity = { ...activity, end: dbDate(), status: 'oc1pvgu8gv29bp0' };
-            handleActivitySubmission(dispatch, newActivity, offlineActivities);
-          },
-        },
-      ]
-    );
+    setAlertVisible(true);
+  };
+
+  const handleConfirm = (newActivity) => {
+    setAlertVisible(false);
+    handleActivitySubmission(dispatch, newActivity, offlineActivities);
   };
 
   const handleDelete = (activity) => {
@@ -84,7 +76,11 @@ const ReadPage = () => {
         <Text style={styles.detailText}>
           Status: {activity.status === 'oc1pvgu8gv29bp0' ? 'Resolved' : 'Open'}
         </Text>
+        <Text style={styles.detailText}>
+          Action Taken: {activity.actionTaken === '' ? 'N/A' : activity.actionTaken}
+        </Text>
         {activity.status === 'oc1pvgu8gv29bp0' && (
+          
           <Text style={styles.detailText}>
             Resolved: {dateDisplay(activity.end) || ""} 
           </Text>
@@ -104,12 +100,12 @@ const ReadPage = () => {
           <Text style={styles.buttonText}>Delete</Text>
       </TouchableOpacity>
         {activity.status !== 'oc1pvgu8gv29bp0' && (
-          <TouchableOpacity onPress={()=>handleResolve(activity)} style={{ 
-            ...styles.button, 
-            backgroundColor: "#4CAF50" 
-          }}>
-             <Text style={styles.buttonText}>Resolve</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => handleResolve(activity)}
+          style={{ ...styles.button, backgroundColor: '#4CAF50' }}
+        >
+          <Text style={styles.buttonText}>Resolve</Text>
+        </TouchableOpacity>
         )}
       </View>
       </> : ""}
@@ -126,6 +122,12 @@ const ReadPage = () => {
         keyExtractor={(item, index) => index}
       />
         </>: ""}
+      <ActionTakenModal
+        visible={alertVisible}
+        onClose={() => setAlertVisible(false)}
+        onConfirm={handleConfirm}
+        activity={activity}
+      />
     </ScrollView>
   );
 };
