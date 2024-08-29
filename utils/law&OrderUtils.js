@@ -24,13 +24,18 @@ export const submitActivityToPocketBase = async (activity) => {
             type: attachment.type || 'application/octet-stream',
             name: attachment.name || `attachment-${i}`,
           });
+          console.log('Appended to FormData:', attachment.name, attachment.type, attachment.uri);
         }
       }
     }
+
+    console.log('Final FormData:', formData);
     if (activity.id) {
-      await pb.collection('gogb_law_incidents').update(activity.id, formData);
+      const response = await pb.collection('gogb_law_incidents').update(activity.id, formData);
+      console.log('Server response:', response);
     } else {
-      await pb.collection('gogb_law_incidents').create(formData);
+      const response = await pb.collection('gogb_law_incidents').create(formData);
+      console.log('Server response:', response);
     }
   } catch (error) {
     throw new Error('Error submitting activity to PocketBase: ' + error.message);

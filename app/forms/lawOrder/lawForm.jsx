@@ -139,17 +139,19 @@ const LawForm = () => {
   const handleDocumentPick = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type : [
-          'application/pdf',                        
-          'application/vnd.google-apps.document',   
-          'application/msword',                     
-          'text/plain'                              
+        type: [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.ms-excel',
+          'text/plain',
         ],
         multiple: true,
       });
   
+      console.log('DocumentPicker result:', result);  // Log the result to verify the output
+  
       if (!result.canceled) {
-        const newAttachments = result.assets.map(asset => ({
+        const newAttachments = result.assets.map((asset) => ({
           uri: asset.uri,
           name: asset.name,
           type: asset.mimeType,
@@ -158,9 +160,9 @@ const LawForm = () => {
         setAttachments([...attachments, ...newAttachments]);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error picking document:', err);
     }
-  };  
+  };
 
   const handleAudioPick = async () => {
     const result = await DocumentPicker.getDocumentAsync({
