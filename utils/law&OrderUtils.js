@@ -4,7 +4,6 @@ import { Alert } from 'react-native';
 import { uriToBlob } from './helpers'; // Adjust the path as necessary
 import { addActivity, updateActivity, setOfflineActivity, clearOfflineActivities, setOfflineActivities, setActivities, setCurrActivity } from '../redux/lawSlice';
 
-
 export const submitActivityToPocketBase = async (activity) => {
   try {
     const formData = new FormData();
