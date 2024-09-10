@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import pb from '../pocketbaseClient';
 
 const AttachmentPreview = ({ item, id, onRemove, page }) => {
   function truncateFileName(fileName) {
@@ -17,33 +16,41 @@ const AttachmentPreview = ({ item, id, onRemove, page }) => {
     if (!item) {
       return <Text>Unable to load preview</Text>;
     }
-    if (typeof(item ==='string')) {
-     const url = `https://pb.codeforpakistan.org/api/files/rhr614cyyzbvkfr/${id}/${item}`;
-     const extension = url.split('.').pop();
-     switch(extension){
-      case 'jpg':
-      case 'jpeg':
-      case 'png': 
-      return (
-        <Image source={{ uri: url}} style={styles.image} />
-      );
-      case 'pdf':
-      case 'google-doc':
-      case 'doc':
-      case 'txt':
+
+    // Handling when item is a string (URL or file name from server)
+    if (typeof item === 'string') {
+      const url = `https://pb.codeforpakistan.org/api/files/rhr614cyyzbvkfr/${id}/${item}`;
+      const extension = url.split('.').pop().toLowerCase();
+
+      if (['jpg', 'jpeg', 'png'].includes(extension)) {
+        return <Image source={{ uri: url }} style={styles.image} />;
+      } else if (['pdf', 'doc', 'docx', 'txt', 'xlsx', 'xls'].includes(extension)) {
+        return <Text style={styles.fileName}>{truncateFileName(item)}</Text>; // For documents, show name
+      } else if (['mp4', 'mov'].includes(extension)) {
         return (
-          <View style={styles.preview}>
-            <TabBarIcon name="document-outline" color="#007AFF" />
-            <Text style={styles.fileName}>{truncateFileName(item) || 'Document'}</Text>
+          <View style={styles.videoContainer}>
+            <Video
+              source={{ uri: url }}
+              style={styles.video}
+              useNativeControls
+              resizeMode="cover"
+            />
+            <View style={styles.overlay}>
+              <TabBarIcon name="play-circle-outline" color="#fff" />
+            </View>
           </View>
         );
-     }
+      } else if (['mp3', 'wav', 'm4a', 'ogg'].includes(extension)) {
+        return <Text style={styles.fileName}>{truncateFileName(item)}</Text>; // Show name for audio files
+      } else {
+        return <Text>Unsupported file type</Text>;
+      }
     }
+
+    // Handling when item is an object (local files with view property)
     switch (item.view) {
       case 'image':
-        return (
-          <Image source={{ uri: item.uri}} style={styles.image} />
-        );
+        return <Image source={{ uri: item.uri }} style={styles.image} />;
       case 'video':
         return (
           <View style={styles.videoContainer}>
@@ -51,7 +58,6 @@ const AttachmentPreview = ({ item, id, onRemove, page }) => {
               source={{ uri: item.uri }}
               style={styles.video}
               useNativeControls
-              shouldPlay
               resizeMode="cover"
             />
             <View style={styles.overlay}>
@@ -60,19 +66,9 @@ const AttachmentPreview = ({ item, id, onRemove, page }) => {
           </View>
         );
       case 'document':
-        return (
-          <View style={styles.preview}>
-            <TabBarIcon name="document-outline" color="#007AFF" />
-            <Text style={styles.fileName}>{truncateFileName(item.name) || 'Document'}</Text>
-          </View>
-        );
+        return <Text style={styles.fileName}>{truncateFileName(item.name)}</Text>; // Show name for documents
       case 'audio':
-        return (
-          <View style={styles.preview}>
-            <TabBarIcon name="mic-outline" color="#007AFF" />
-            <Text style={styles.fileName}>{truncateFileName(item.name) || 'Audio File'}</Text>
-          </View>
-        );
+        return <Text style={styles.fileName}>{truncateFileName(item.name)}</Text>; // Show name for audio files
       default:
         return <Text>{item.name || item.type?.toUpperCase()}</Text>;
     }
@@ -81,11 +77,11 @@ const AttachmentPreview = ({ item, id, onRemove, page }) => {
   return (
     <View style={styles.container}>
       {renderPreview()}
-      {page !== 'details' ? 
-      <TouchableOpacity onPress={onRemove}>
-      <TabBarIcon name="trash-outline" color="red" />
-      </TouchableOpacity> : ''
-      }
+      {page !== 'details' && (
+        <TouchableOpacity onPress={onRemove}>
+          <TabBarIcon name="trash-outline" color="red" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -126,14 +122,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  preview: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   fileName: {
     marginLeft: 10,
+    color: '#007AFF',
   },
 });
 
 export default AttachmentPreview;
-

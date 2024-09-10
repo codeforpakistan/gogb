@@ -40,7 +40,8 @@ const LocationDropdown = ({ value, onValueChange }) => {
         borderRadius: 5,
         paddingHorizontal: 10,
       }}
-      dropDownContainerStyle={{ borderColor: '#ccc' }}
+      containerStyle={{ zIndex: 100, }}
+      dropDownContainerStyle={{ borderColor: '#ccc', zIndex: 100, }}
       zIndex={1}
     />
   );

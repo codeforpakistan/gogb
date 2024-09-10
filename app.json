@@ -3,7 +3,7 @@
     "owner": "codeforpakistan",
     "name": "GoGB",
     "slug": "gogb",
-    "version": "1.0.0",
+    "version": "0.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "gogb",
@@ -14,16 +14,23 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "buildNumber": "0.0.2",
       "supportsTablet": true,
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "This app needs access to your microphone for audio record."
+        "NSCameraUsageDescription": "This app uses the camera to take photos.",
+        "NSMicrophoneUsageDescription": "This app uses the microphone to record audio.",
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to select photos.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby places."
       },
       "bundleIdentifier": "com.codeforpakistan.GoGB"
     },
     "android": {
+      "versionCode": 2,
       "permissions": [
         "INTERNET",
+        "CAMERA",
         "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
       "adaptiveIcon": {

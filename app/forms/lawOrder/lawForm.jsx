@@ -14,9 +14,17 @@ import LawTypesDropdown from './lawTypes';
 import { handleActivitySubmission } from '@/utils/law&OrderUtils';
 import useHeaderTitle from '@/hooks/useHeaderTitle';
 import AttachmentPreview from '../../../components/attachmentPreview';
-
+import { requestPermissions } from '../../../utils/helpers';
 
 const LawForm = () => {
+  useEffect(() => {
+    const getPermissions = async () => {
+      await requestPermissions();
+    };
+
+    getPermissions();
+  }, []);
+
   useHeaderTitle('Law & Order');
   const dispatch = useDispatch();
   const { id, actStart } = useLocalSearchParams();
