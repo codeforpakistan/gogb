@@ -3,7 +3,7 @@
     "owner": "codeforpakistan",
     "name": "GoGB",
     "slug": "gogb",
-    "version": "0.0.2",
+    "version": "0.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "gogb",
@@ -14,7 +14,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "buildNumber": "0.0.2",
+      "buildNumber": "0.0.5",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take photos.",
@@ -25,9 +25,10 @@
       "bundleIdentifier": "com.codeforpakistan.GoGB"
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 5,
       "permissions": [
         "INTERNET",
+        "ACCESS_NETWORK_STATE",
         "CAMERA",
         "RECORD_AUDIO",
         "READ_EXTERNAL_STORAGE",

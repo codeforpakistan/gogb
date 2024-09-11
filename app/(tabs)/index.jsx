@@ -1,9 +1,34 @@
 import React from 'react';
 import { Text, FlatList, Image, StyleSheet, View, AppRegistry } from 'react-native';
 import { Link } from 'expo-router';
+import { NavigationContainer } from '@react-navigation/native';
+import { DdRumReactNavigationTracking } from '@datadog/mobile-react-navigation';
 import { ThemedText } from '@/components/ThemedText';
+import {
+  DatadogProvider,
+  DatadogProviderConfiguration,
+  UploadFrequency,
+  BatchSize,
+  SdkVerbosity,
+} from "@datadog/mobile-react-native";
 
-// Define the path to the icons relative to this file
+// Datadog configuration
+const config = new DatadogProviderConfiguration(
+  "pub554769a2e389611f24adf585e085846d",
+  "staging",
+  "5c538705-1b1a-4c04-84ad-88f2b348c2b9",
+  true, true, true
+);
+config.site = "US5";
+config.nativeCrashReportEnabled = true;
+config.sessionSamplingRate = 100;
+if (__DEV__) {
+  config.uploadFrequency = UploadFrequency.FREQUENT;
+  config.batchSize = BatchSize.SMALL;
+  config.verbosity = SdkVerbosity.DEBUG;
+}
+
+// Data for grid icons
 const data = [
   { id: '1', name: 'Law & Order', icon: require('../../assets/images/order.png'), link: '/forms/lawOrder/lawNOrder' },
   { id: '2', name: 'Price Control', icon: require('../../assets/images/price.png'), link: '/forms/priceControl/price' },
@@ -30,7 +55,26 @@ const Index = () => {
     />
   );
 };
-AppRegistry.registerComponent('Go GB', () => Index);
+
+// Main app component with Datadog and Navigation tracking
+const Main = () => {
+  const navigationRef = React.useRef(null);
+
+  return (
+    <DatadogProvider configuration={config}>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          DdRumReactNavigationTracking.startTrackingViews(navigationRef.current);
+        }}
+      >
+        <Index />
+      </NavigationContainer>
+    </DatadogProvider>
+  );
+};
+
+AppRegistry.registerComponent('Go GB', () => Main);
 
 const styles = StyleSheet.create({
   grid: {
@@ -58,9 +102,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   iconName: {
-
     textAlign: 'center',
     color: '#333',
   },
 });
+
 export default Index;
