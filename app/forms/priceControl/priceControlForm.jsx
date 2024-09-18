@@ -466,7 +466,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter shops visited"
                 value={shopsVisited}
-                onValueChange={setShopsVisited}
+                onChangeText={setShopsVisited}
               />
             </View>
           </View>
@@ -477,7 +477,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter shops sealed"
                 value={shopsSealed}
-                onValueChange={setShopsSealed}
+                onChangeText={setShopsSealed}
               />
             </View>
             <View style={styles.item}>
@@ -486,7 +486,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter compliances"
                 value={compliances}
-                onValueChange={setCompliances}
+                onChangeText={setCompliances}
               />
             </View>
 
@@ -496,7 +496,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter arrests made"
                 value={arrestsMade}
-                onValueChange={setArrestsMade}
+                onChangeText={setArrestsMade}
               />
             </View>
           </View>
@@ -507,7 +507,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter violations"
                 value={violations}
-                onValueChange={setViolations}
+                onChangeText={setViolations}
               />
             </View>
             
@@ -517,7 +517,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter warnings issued"
                 value={warningsIssued}
-                onValueChange={setWarningsIssued}
+                onChangeText={setWarningsIssued}
               />
             </View>
 
@@ -527,7 +527,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter FIRs registered"
                 value={fIRsRegistered}
-                onValueChange={setFIRsRegistered}
+                onChangeText={setFIRsRegistered}
               />
             </View>
           </View>
@@ -538,7 +538,7 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter fines issued"
                 value={finesIssued}
-                onValueChange={setFinesIssued}
+                onChangeText={setFinesIssued}
               />
             </View>
           </View>
