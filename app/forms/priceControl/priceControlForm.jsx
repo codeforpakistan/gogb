@@ -7,18 +7,30 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Audio } from 'expo-av';
 import { useLocalSearchParams, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import {dbDate } from '@/utils/formatDate';
 import MediaPickerModal from '@/components/mediaPickerModal';
 import LocationDropdown from '@/components/locationDropdown';
-import useHeaderTitle from '@/hooks/useHeaderTitle';
+import {dbDate } from '@/utils/formatDate';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { handleInspectionSubmission } from '@/utils/priceControlUtils';
+import useHeaderTitle from '@/hooks/useHeaderTitle';
 import AttachmentPreview from '../../../components/attachmentPreview';
-
+import { splitDateTime, requestPermissions } from '../../../utils/helpers';
 
 const PriceControlForm = () => {
+  useEffect(() => {
+    const getPermissions = async () => {
+      await requestPermissions();
+    };
+
+    getPermissions();
+  }, []);
+
   useHeaderTitle('Price Control Form');
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
+  const inspections = useSelector((state) => state.priceControl.allInspections);
+  const offlineInspections = useSelector((state) => state.priceControl.offlineInspections);
+  const inspection = inspections?.find((ins) => ins.id === id) || {};
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [dateOfList, setDateOfList] = useState('');
@@ -27,17 +39,64 @@ const PriceControlForm = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaType, setMediaType] = useState('');
+  const [shopsVisited, setShopsVisited] = useState(inspection?.shops_visited?.toString() || '');
+  const [shopsSealed, setShopsSealed] = useState(inspection?.shops_sealed?.toString() || '');
+  const [violations, setViolations] = useState(inspection?.violations?.toString() || '');
+  const [compliances, setCompliances] = useState(inspection?.compliances?.toString() || '');
+  const [warningsIssued, setWarningsIssued] = useState(inspection?.warnings_issued?.toString() || '');
+  const [arrestsMade, setArrestsMade] = useState(inspection?.arrests_made?.toString() || '');
+  const [fIRsRegistered, setFIRsRegistered] = useState(inspection?.firs_registered?.toString() || '');
+  const [finesIssued, setFinesIssued] = useState(inspection?.fines_issued?.toString() || '');
+  const [location, setLocation] = useState(inspection?.location || '');
+  const [attachments, setAttachments] = useState(inspection?.attachments || []);
 
-  const [shopsVisited, setShopsVisited] = useState('');
-  const [shopsSealed, setShopsSealed] = useState('');
-  const [violations, setViolations] = useState('');
-  const [compliances, setCompliances] = useState('');
-  const [warningsIssued, setWarningsIssued] = useState('');
-  const [arrestsMade, setArrestsMade] = useState('');
-  const [fIRsRegistered, setFIRsRegistered] = useState('');
-  const [finesIssued, setFinesIssued] = useState('');
-  const [location, setLocation] = useState('');
-  const [attachments, setAttachments] = useState([]);
+  useEffect(() => {
+    if (inspection.datetime) {
+      try {
+        const { date, time } = splitDateTime(inspection.datetime);
+        setDateOfList(date);
+        setTimeOfList(time);
+      } catch (error) {
+        console.error('Error splitting datetime:', error);
+      }
+    }
+  }, [inspection.datetime]);
+
+  const handleSubmit = async () => {
+    // Validate that both date and time are selected
+    if (!dateOfList || !timeOfList) {
+      Alert.alert('Missing Fields', 'Please select both date and time.');
+      return;
+    }
+
+    // Combine dateOfList and timeOfList into a single Date object
+    const combinedDateTime = new Date(`${dateOfList} ${timeOfList}`);
+    
+    if (isNaN(combinedDateTime)) {
+      Alert.alert('Invalid Date/Time', 'Please ensure date and time are correctly selected.');
+      return;
+    }
+    const newInspection = {
+      location,
+      datetime: combinedDateTime.toISOString(),
+      shopsVisited,
+      shopsSealed,
+      violations,
+      compliances,
+      warningsIssued,
+      arrestsMade,
+      fIRsRegistered,
+      finesIssued,
+      attachments,
+    };
+    if (id) {
+      newInspection.id = id;
+      await handleInspectionSubmission(dispatch, newInspection, offlineInspections);
+    } else {
+      await handleInspectionSubmission(dispatch, newInspection, offlineInspections);
+    }
+    router.back();
+  };
 
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
@@ -60,17 +119,41 @@ const PriceControlForm = () => {
     }
   }
 
+  const onChangeTime = ({ type }, selectedTime) => {
+    if (type == 'set') {
+      const currentTime = selectedTime;
+      setTime(currentTime);
+
+      if (Platform.OS === 'android') {
+        toggleTimePicker();
+        setTimeOfList(currentTime.toTimeString());
+      }
+    } else {
+      toggleTimePicker();
+    }
+  }
+
+  const confirmDateOfList = () => {
+    setDateOfList(date.toDateString());
+    toggleDatePicker();
+  }
+
+  const confirmTimeOfList = () => {
+    setTimeOfList(time.toTimeString());
+    toggleTimePicker();
+  }
+
   const openModal = (type) => {
     setMediaType(type);
     setModalVisible(true);
   };
 
   const imgDir = FileSystem.documentDirectory + 'gogb/';
-   const ensureDirExits = async()=> {
-   const dirInfo = await FileSystem.getInfoAsync(imgDir);
-   if(!dirInfo.exists) {
-     await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
-   }
+    const ensureDirExits = async()=> {
+    const dirInfo = await FileSystem.getInfoAsync(imgDir);
+    if(!dirInfo.exists) {
+      await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
+    }
   };
   const saveFile = async (uri, ext) => {
     await ensureDirExits();
@@ -110,7 +193,6 @@ const PriceControlForm = () => {
 
     }
   };
-  
   
   // New video picker function
   const handleVideoPick = async (tool) => {
@@ -233,41 +315,13 @@ const PriceControlForm = () => {
     setAttachments(updatedAttachments);
   };
 
-  const onChangeTime = ({ type }, selectedTime) => {
-    if (type == 'set') {
-      const currentTime = selectedTime;
-      setTime(currentTime);
-
-      if (Platform.OS === 'android') {
-        toggleTimePicker();
-        setTimeOfList(currentTime.toTimeString());
-      }
-    } else {
-      toggleTimePicker();
-    }
-  }
-
-  const confirmDateOfList = () => {
-    setDateOfList(currentDate.toDateString());
-    toggleDatePicker();
-  }
-
-  const confirmTimeOfList = () => {
-    setTimeOfList(currentTime.toTimeString());
-    toggleTimePicker();
-  }
-
-  const handleSubmit = async () => {
-    router.back();
-  };
-
 
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>New Inspection</Text>
+            <Text style={styles.title}>{id? "Update Inspection": "New Inspection"}</Text>
           </View>
 
           <View style={styles.itemContainerFull}>
@@ -405,14 +459,14 @@ const PriceControlForm = () => {
               )}
             </View>
           </View>
-          {/* Shops visited = Compliances + Violations */}
-          {/* Violations = Arrests Made + Warnings + FIRs + shops sealed */}
           <View style={styles.itemContainerFull}>
             <View style={styles.item}>
               <Text style={styles.label}>Shops Visited</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter shops visited"
+                value={shopsVisited}
+                onValueChange={setShopsVisited}
               />
             </View>
           </View>
@@ -422,6 +476,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter shops sealed"
+                value={shopsSealed}
+                onValueChange={setShopsSealed}
               />
             </View>
             <View style={styles.item}>
@@ -429,6 +485,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter compliances"
+                value={compliances}
+                onValueChange={setCompliances}
               />
             </View>
 
@@ -437,6 +495,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter arrests made"
+                value={arrestsMade}
+                onValueChange={setArrestsMade}
               />
             </View>
           </View>
@@ -446,6 +506,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter violations"
+                value={violations}
+                onValueChange={setViolations}
               />
             </View>
             
@@ -454,6 +516,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter warnings issued"
+                value={warningsIssued}
+                onValueChange={setWarningsIssued}
               />
             </View>
 
@@ -462,6 +526,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter FIRs registered"
+                value={fIRsRegistered}
+                onValueChange={setFIRsRegistered}
               />
             </View>
           </View>
@@ -471,6 +537,8 @@ const PriceControlForm = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter fines issued"
+                value={finesIssued}
+                onValueChange={setFinesIssued}
               />
             </View>
           </View>
@@ -514,7 +582,7 @@ const PriceControlForm = () => {
             />
             </> : null}
           </View>
-          <View style={styles.itemContainerFull}>
+          <View style={[styles.itemContainerFull, {marginBottom: 20}]}>
             <Button title="Submit" onPress={()=>handleSubmit(id)} />
           </View>
         </View>

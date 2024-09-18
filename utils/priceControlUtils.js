@@ -8,7 +8,37 @@ export const submitInspectionToPocketBase = async (inspection) => {
     const formData = new FormData();
     for (const key in inspection) {
       if (key !== 'attachments') {
-        formData.append(key, inspection[key]);
+        switch(key) {
+          case 'datetime':
+            formData.append('datetime', inspection[key]);
+            break;
+          case 'shopsVisited':
+            formData.append('shops_visited', inspection[key]);
+            break;
+          case 'shopsSealed':
+            formData.append('shops_sealed', inspection[key]);
+            break;
+          case 'violations':
+            formData.append('violations', inspection[key]);
+            break;
+          case 'compliances':
+            formData.append('compliances', inspection[key]);
+            break;
+          case 'warningsIssued':
+            formData.append('warnings_issued', inspection[key]);
+            break;
+          case 'arrestsMade':
+            formData.append('arrests_made', inspection[key]);
+            break;
+          case 'fIRsRegistered':
+            formData.append('firs_registered', inspection[key]);
+            break;
+          case 'finesIssued':
+            formData.append('fines_issued', inspection[key]);
+            break;
+          default:
+            formData.append(key, inspection[key]);
+        }
       }
     }
     // Append attachments if they exist
@@ -33,7 +63,7 @@ export const submitInspectionToPocketBase = async (inspection) => {
 
 export const fetchInspectionsFromPocketBase = async () => {
   try {
-    const inspections = await pb.collection('gogb_price_control').getFullList({sort:'-datetime'});
+    const inspections = await pb.collection('gogb_price_control').getFullList({sort:'-created'});
     return inspections;
   } catch (error) {
     console.log('Error fetching inspections from PocketBase: ' + error.message);
