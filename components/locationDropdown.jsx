@@ -25,6 +25,7 @@ const LocationDropdown = ({ value, onValueChange }) => {
 
   return (
     <DropDownPicker
+      listMode='MODAL'
       open={open}
       value={selectedValue}
       items={items}
@@ -39,10 +40,15 @@ const LocationDropdown = ({ value, onValueChange }) => {
         marginBottom: 15,
         borderRadius: 5,
         paddingHorizontal: 10,
+        zIndex: 3000, // Increased zIndex
+        elevation: 3000, // For Android
       }}
-      containerStyle={{ zIndex: 100, }}
-      dropDownContainerStyle={{ borderColor: '#ccc', zIndex: 100, }}
-      zIndex={1}
+      dropDownContainerStyle={{
+        borderColor: '#ccc',
+        zIndex: 2000, // Ensure it's below the main picker
+        elevation: 2000,
+      }}
+      zIndex={3000} // Ensure this is higher than other components
     />
   );
 };
