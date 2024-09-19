@@ -25,9 +25,8 @@ const ReadPage = () => {
       params: {id: inspection.id },
     });
   };
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Inspection Details</Text>
       </View>
@@ -50,18 +49,20 @@ const ReadPage = () => {
               <Text style={styles.buttonText}>Edit</Text>
             </TouchableOpacity>
           </View>
-          {inspection.attachments && (
-            <View>
-              {inspection.attachments.map((item, index) => (
-                <AttachmentPreview
-                  key={index}
-                  item={item}
-                  id={inspection.id}
-                  page="details"
-                />
-              ))}
-            </View>
-          )}
+          {inspection.attachments ? <>
+            <FlatList
+            data={inspection.attachments}
+            renderItem={({ item, index }) => (
+              <AttachmentPreview
+                item={item}
+                id={inspection.id}
+                page='details'
+                module='priceControl'
+              />
+            )}
+            keyExtractor={(item, index) => index}
+          />
+            </>: ""}
         </>
       )}
     </ScrollView>
@@ -70,7 +71,6 @@ const ReadPage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   header: {
