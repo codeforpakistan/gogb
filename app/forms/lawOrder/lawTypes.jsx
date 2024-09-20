@@ -45,10 +45,10 @@ const LawTypesDropdown = ({ value, onValueChange }) => {
       }}
       dropDownContainerStyle={{
         borderColor: '#ccc',
-        zIndex: 2000, // Ensure it's below the main picker
+        zIndex: 2000,
         elevation: 2000,
       }}
-      zIndex={3000} // Ensure this is higher than other components
+      zIndex={3000}
     />
   );
 };

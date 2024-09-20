@@ -32,7 +32,7 @@ const LocationDropdown = ({ value, onValueChange }) => {
       setOpen={setOpen}
       setValue={setSelectedValue}
       setItems={setItems}
-      onChangeValue={onValueChange} // Ensure onValueChange updates parent state
+      onChangeValue={onValueChange}
       searchable={true}
       placeholder="Select or search a location"
       style={{
@@ -40,15 +40,15 @@ const LocationDropdown = ({ value, onValueChange }) => {
         marginBottom: 15,
         borderRadius: 5,
         paddingHorizontal: 10,
-        zIndex: 3000, // Increased zIndex
-        elevation: 3000, // For Android
+        zIndex: 3000,
+        elevation: 3000,
       }}
       dropDownContainerStyle={{
         borderColor: '#ccc',
-        zIndex: 2000, // Ensure it's below the main picker
+        zIndex: 2000,
         elevation: 2000,
       }}
-      zIndex={3000} // Ensure this is higher than other components
+      zIndex={3000}
     />
   );
 };
