@@ -466,7 +466,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter shops visited"
                 value={shopsVisited}
-                onChangeText={setShopsVisited}
+                onChangeText={(text) => setShopsVisited(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
           </View>
@@ -477,7 +478,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter shops sealed"
                 value={shopsSealed}
-                onChangeText={setShopsSealed}
+                onChangeText={(text) => setShopsSealed(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
             <View style={styles.item}>
@@ -486,7 +488,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter compliances"
                 value={compliances}
-                onChangeText={setCompliances}
+                onChangeText={(text) => setCompliances(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
 
@@ -496,7 +499,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter arrests made"
                 value={arrestsMade}
-                onChangeText={setArrestsMade}
+                onChangeText={(text) => setArrestsMade(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
           </View>
@@ -507,7 +511,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter violations"
                 value={violations}
-                onChangeText={setViolations}
+                onChangeText={(text) => setViolations(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
             
@@ -517,7 +522,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter warnings issued"
                 value={warningsIssued}
-                onChangeText={setWarningsIssued}
+                onChangeText={(text) => setWarningsIssued(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
 
@@ -527,7 +533,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter FIRs registered"
                 value={fIRsRegistered}
-                onChangeText={setFIRsRegistered}
+                onChangeText={(text) => setFIRsRegistered(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
           </View>
@@ -538,7 +545,8 @@ const PriceControlForm = () => {
                 style={styles.input}
                 placeholder="Enter fines issued"
                 value={finesIssued}
-                onChangeText={setFinesIssued}
+                onChangeText={(text) => setFinesIssued(text.replace(/[^0-9]/g, ''))}
+                keyboardType="numeric"
               />
             </View>
           </View>
