@@ -303,6 +303,7 @@ const LawForm = () => {
             item={item}
             id={id}
             onRemove={() => removeAttachment(index)}
+            module={'lawOrder'}
           />
         )}
         keyExtractor={(item, index) => index}

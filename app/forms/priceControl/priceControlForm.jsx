@@ -70,7 +70,7 @@ const PriceControlForm = () => {
     }
 
     // Combine dateOfList and timeOfList into a single Date object
-    const combinedDateTime = new Date(`${dateOfList} ${timeOfList}`);
+    const combinedDateTime = new Date(dateOfList + ' ' + timeOfList);
     
     if (isNaN(combinedDateTime)) {
       Alert.alert('Invalid Date/Time', 'Please ensure date and time are correctly selected.');
@@ -584,6 +584,7 @@ const PriceControlForm = () => {
                   item={item}
                   id={id}
                   onRemove={() => removeAttachment(index)}
+                  module={'priceControl'}
                 />
               )}
               keyExtractor={(item, index) => index}
