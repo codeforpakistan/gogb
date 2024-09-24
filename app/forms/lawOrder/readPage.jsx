@@ -117,6 +117,7 @@ const ReadPage = () => {
             item={item}
             id={activity.id}
             page='details'
+            module='lawOrder'
           />
         )}
         keyExtractor={(item, index) => index}

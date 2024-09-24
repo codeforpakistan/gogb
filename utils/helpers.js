@@ -1,7 +1,11 @@
 import * as FileSystem from 'expo-file-system';
 import mime from 'mime';
 
-// Convert URI to Base64 (bypassing the need for Blob)
+/**
+ * Convert a URI to a base64 string.
+ * @param {string} uri - The URI to convert.
+ * @returns {Promise<string>} - The base64 string.
+ */
 export const uriToBase64 = async (uri) => {
     try {
         const base64Data = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
@@ -13,6 +17,10 @@ export const uriToBase64 = async (uri) => {
     }
 };
 
+/**
+ * Request the permissions required for the app to function.
+ * @returns {Promise<void>}
+ */
 export const requestPermissions = async () => {
     if (Platform.OS === 'android') {
         try {
@@ -36,4 +44,28 @@ export const requestPermissions = async () => {
             console.warn(err);
         }
     }
+};
+
+/**
+ * Splits a datetime string or Date object into separate date and time strings.
+ *
+ * @param {string | Date} datetime - The datetime to split.
+ * @returns {{ date: string, time: string }} - An object containing separate date and time.
+ */
+export const splitDateTime = (datetime) => {
+    let dateObj;
+    
+    if (datetime instanceof Date) {
+        dateObj = datetime;
+    } else {
+        dateObj = new Date(datetime);
+        if (isNaN(dateObj)) {
+            throw new Error('Invalid datetime format');
+        }
+    }
+
+    const date = dateObj.toDateString(); // e.g., "Wed Sep 18 2024"
+    const time = dateObj.toTimeString(); // e.g., "11:20:00 GMT+0500"
+
+    return { date, time };
 };

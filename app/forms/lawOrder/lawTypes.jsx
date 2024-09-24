@@ -25,6 +25,7 @@ const LawTypesDropdown = ({ value, onValueChange }) => {
 
   return (
     <DropDownPicker
+      listMode='MODAL'
       open={open}
       value={selectedValue}
       items={items}
@@ -39,9 +40,15 @@ const LawTypesDropdown = ({ value, onValueChange }) => {
         marginBottom: 15,
         borderRadius: 5,
         paddingHorizontal: 10,
+        zIndex: 3000,
+        elevation: 3000,
       }}
-      dropDownContainerStyle={{ borderColor: '#ccc' }}
-      zIndex={2}
+      dropDownContainerStyle={{
+        borderColor: '#ccc',
+        zIndex: 2000,
+        elevation: 2000,
+      }}
+      zIndex={3000}
     />
   );
 };

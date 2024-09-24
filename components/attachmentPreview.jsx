@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
-const AttachmentPreview = ({ item, id, onRemove, page }) => {
+const AttachmentPreview = ({ item, id, onRemove, page, module }) => {
   function truncateFileName(fileName) {
     const maxLength = 25;
     const extension = fileName.split('.').pop();
@@ -19,9 +19,15 @@ const AttachmentPreview = ({ item, id, onRemove, page }) => {
 
     // Handling when item is a string (URL or file name from server)
     if (typeof item === 'string') {
-      const url = `https://pb.codeforpakistan.org/api/files/rhr614cyyzbvkfr/${id}/${item}`;
+      var url = '';
+      if (module === 'lawOrder') {
+        url = `https://pb.codeforpakistan.org/api/files/rhr614cyyzbvkfr/${id}/${item}`;
+      }
+      if (module === 'priceControl') {
+        url = `https://pb.codeforpakistan.org/api/files/9gyv934r65fssiy/${id}/${item}`;
+      }
       const extension = url.split('.').pop().toLowerCase();
-
+      console.log(url);
       if (['jpg', 'jpeg', 'png'].includes(extension)) {
         return <Image source={{ uri: url }} style={styles.image} />;
       } else if (['pdf', 'doc', 'docx', 'txt', 'xlsx', 'xls'].includes(extension)) {

@@ -68,11 +68,11 @@ const LawForm = () => {
   };
 
   const imgDir = FileSystem.documentDirectory + 'gogb/';
-   const ensureDirExits = async()=> {
-   const dirInfo = await FileSystem.getInfoAsync(imgDir);
-   if(!dirInfo.exists) {
-     await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
-   }
+    const ensureDirExits = async()=> {
+    const dirInfo = await FileSystem.getInfoAsync(imgDir);
+    if(!dirInfo.exists) {
+      await FileSystem.makeDirectoryAsync(imgDir, {intermediates:true});
+    }
   };
   const saveFile = async (uri, ext) => {
     await ensureDirExits();
@@ -303,6 +303,7 @@ const LawForm = () => {
             item={item}
             id={id}
             onRemove={() => removeAttachment(index)}
+            module={'lawOrder'}
           />
         )}
         keyExtractor={(item, index) => index}
