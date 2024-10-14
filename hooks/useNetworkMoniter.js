@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
-import pb from '../pocketbaseClient'; // Adjust the path to your PocketBase client
-import { clearOfflineActivities } from '../redux/lawSlice'; // Adjust the path to your slice
+import pb from '../pocketbaseClient'; 
+import { clearOfflineActivities } from '../redux/lawSlice'; 
 
 const useNetworkMonitor = () => {
   const offlineActivities = useSelector((state) => state?.law?.offlineActivities);

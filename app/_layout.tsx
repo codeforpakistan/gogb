@@ -19,7 +19,7 @@ function AppContent() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // useNetworkMonitor(); // Use the custom hook here
+  useNetworkMonitor(); 
 
   useEffect(() => {
     if (loaded) {
